@@ -1,5 +1,6 @@
 package ChatManager.Commands.Chat;
 
+import ChatManager.Handlers.Util.StringUtil;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -19,8 +20,8 @@ public class ChannelCommands
 	
 	public ChannelCommands() { }
 	
-	@CommandHandler(name = "channel", usage = "/channel") //permission = "vaeconnetwork.chat.message"
-	public void ChannelBase(Player Player, String[] Args)
+	@CommandHandler(name = "channel", usage = "/channel", permission = "chatmanager.channel")
+	public void channelBaseCommand(Player Player, String[] Args)
 	{
 		if (Args.length == 0)
 		{
@@ -29,7 +30,7 @@ public class ChannelCommands
 	}
 	
 	@SubCommandHandler(name = "help", parent = "channel")
-	public void ChannelHelp(Player Player, String[] Args)
+	public void channelHelpCommand(Player Player, String[] Args)
 	{
 		HelpScreen Screen = new HelpScreen("Channel-Command Help");
 		Screen.setHeader(ChatColor.AQUA + "<name> (Page <page> of <maxpage>)");
@@ -59,172 +60,189 @@ public class ChannelCommands
 		}
 	}
 	
-	@SubCommandHandler(name = "create", parent = "channel")//usage = "/addchannel <name>", permission = "vaeconnetwork.chat.message"
-	public void MakeChannel(Player Player, String[] Args)
+	@SubCommandHandler(name = "create", parent = "channel", permission = "chatmanager.channel.create")//usage = "/addchannel <name>", permission = "vaeconnetwork.chat.message"
+	public void channelCreateCommand(Player player, String[] commandArgs)
 	{
-		if (Args.length > 1 && !Args[1].isEmpty())
+		if (commandArgs.length > 1 && !commandArgs[1].isEmpty())
 		{
-			String ChannelName = Args[1];
-			if (!ChannelName.equalsIgnoreCase("private"))
+			String channelName = commandArgs[1];
+			if (!channelName.equalsIgnoreCase("private"))
 			{
-				if (!ChatManager.ChannelHandler.isChannel(ChannelName))
+				if (!ChatManager.ChannelHandler.isChannel(channelName))
 				{
-					ChannelCreateEvent Event = new ChannelCreateEvent(new ChatChannel(ChannelName,"[" + ChannelName + "]"), Player);
-					ChannelEventHandler.HandleChannelCreateEvent(Event);
+					ChannelCreateEvent channelCreateEvent = new ChannelCreateEvent(new ChatChannel(channelName,"[" + channelName + "]"), player);
+					ChannelEventHandler.HandleChannelCreateEvent(channelCreateEvent);
 				}
 				else
 				{
-					Player.sendMessage(ChatColor.RED + "The channel '" + ChannelName + "' already exists");
+					player.sendMessage(ChatColor.RED + "The channel '" + channelName + "' already exists");
 				}
 			}
 			else
 			{
-				if (Args.length > 2 && !Args[2].isEmpty())
+				if (commandArgs.length > 2 && !commandArgs[2].isEmpty())
 				{
-					String pChannelName = Args[2];
+					String pChannelName = commandArgs[2];
 					if (!ChatManager.ChannelHandler.isChannel(pChannelName))
 					{
-						ChatChannel PrivateChannel = new ChatChannel(pChannelName,ChatColor.GRAY + "[" + pChannelName + "]" + ChatColor.RESET,Player.getName(),true);
-						ChannelCreateEvent Event = new ChannelCreateEvent(PrivateChannel,Player);
+						ChatChannel privateChatChannel = new ChatChannel(pChannelName,ChatColor.GRAY + "[" + pChannelName + "]" + ChatColor.RESET,player.getName(),true);
+						ChannelCreateEvent Event = new ChannelCreateEvent(privateChatChannel,player);
 						ChannelEventHandler.HandleChannelCreateEvent(Event);
 					}
 					else
 					{
-						Player.sendMessage(ChatColor.RED + "The channel '" + ChannelName + "' already exists");
+						player.sendMessage(ChatColor.RED + "The channel '" + channelName + "' already exists");
 					}
 					
 				}
 				else
 				{
-					Player.sendMessage(ChatColor.YELLOW + "To create a private channel do '" + ChatColor.GREEN + "/channel create private <Name>" + ChatColor.YELLOW + "'");
+					player.sendMessage(ChatColor.YELLOW + "To create a private channel do '" + ChatColor.GREEN + "/channel create private <Name>" + ChatColor.YELLOW + "'");
 				}
 			}
 		}
 	}
 	
-	@SubCommandHandler(name = "delete", parent = "channel"/*, permission = "chatmanager.channels.delete"*/)
-	public void DeleteChannel(Player Player, String[] Args)
+	@SubCommandHandler(name = "delete", parent = "channel", permission = "chatmanager.channel.delete")
+	public void deleteChannelCommand(Player player, String[] commandArgs)
 	{
-		if (Args.length > 1 && !Args[1].isEmpty())
+		if (commandArgs.length > 1 && !commandArgs[1].isEmpty())
 		{
-			String ChannelName = Args[1];
-			if (ChatManager.ChannelHandler.isChannel(ChannelName))
+			String channelName = commandArgs[1];
+			if (ChatManager.ChannelHandler.isChannel(channelName))
 			{
-				ChannelDeleteEvent Event = new ChannelDeleteEvent(ChatManager.ChannelHandler.getChannel(ChannelName), Player);
-				ChannelEventHandler.HandleChannelDeleteEvent(Event);
+				ChannelDeleteEvent channelDeleteEvent = new ChannelDeleteEvent(ChatManager.ChannelHandler.getChannel(channelName), player);
+				ChannelEventHandler.HandleChannelDeleteEvent(channelDeleteEvent);
 			}
 			else
 			{
-				Player.sendMessage(ChatColor.RED + "The Chat Channel '" + ChannelName + "' doesn't exist.");
+				player.sendMessage(ChatColor.RED + "The Chat Channel '" + channelName + "' doesn't exist.");
 			}
 		}
 	}
 	
-	@SubCommandHandler(name = "join", parent = "channel")
-	public void JoinChannel(Player Player, String[] Args)
+	@SubCommandHandler(name = "join", parent = "channel",permission = "chatmanager.channel.join")
+	public void joinChannelEvent(Player player, String[] commandArgs)
 	{
-		if (Args.length > 1)
+		if (commandArgs.length > 1)
 		{
-			if (!Args[1].isEmpty())
+			if (!commandArgs[1].isEmpty())
 			{
-				String ChannelName = Args[1];
-				if (!ChatManager.ChannelHandler.isChannel(ChannelName))
+				String channelName = commandArgs[1];
+				if (!ChatManager.ChannelHandler.isChannel(channelName))
 				{
-					Player.sendMessage("Chat channel " + ChannelName + " doesn't exist");
+					player.sendMessage("Chat channel " + channelName + " doesn't exist");
 				}
 				else
 				{
-					ChannelJoinEvent Event = new ChannelJoinEvent(ChatManager.ChannelHandler.getChannel(ChannelName), Player);
-					ChannelEventHandler.HandleChannelJoinEvent(Event);
+					ChannelJoinEvent channelJoinEvent = new ChannelJoinEvent(ChatManager.ChannelHandler.getChannel(channelName), player);
+					ChannelEventHandler.HandleChannelJoinEvent(channelJoinEvent);
 				}
 			}
 		}
 	}
 	
-	@SubCommandHandler(name = "leave", parent = "channel")
-	public void LeaveChannel(Player Player,String[] Args)
+	@SubCommandHandler(name = "leave", parent = "channel", permission = "chatmanager.channel.join")
+	public void leaveChannelCommand(Player player, String[] commandArgs)
 	{
-		ChannelLeaveEvent Event = new ChannelLeaveEvent(ChatManager.ChannelHandler.getChannel(PlayerHandler.getData(Player.getName()).getChatChannel()), Player);
-		ChannelEventHandler.HandleChannelLeaveEvent(Event);
+		ChannelLeaveEvent channelLeaveEvent = new ChannelLeaveEvent(ChatManager.ChannelHandler.getChannel(PlayerHandler.getData(player.getName()).getChatChannel()), player);
+		ChannelEventHandler.HandleChannelLeaveEvent(channelLeaveEvent);
 	}
 	
-	@SubCommandHandler(name = "invite", parent = "channel")
-	public void InviteChannel(Player Player, String[] Args)
+	@SubCommandHandler(name = "invite", parent = "channel", permission = "chatmanager.channel.invite")
+	public void InviteChannel(Player player, String[] commandArgs)
 	{
-		if (Args.length > 1 && !Args[1].isEmpty())
+		String playerName = player.getName();
+		String playerDisplayName = player.getDisplayName();
+		if (commandArgs.length > 1 && !commandArgs[1].isEmpty())
 		{
-			String Invited = Args[1];
-			if (PlayerHandler.isOnline(Invited))
+			String invitedPlayer = commandArgs[1];
+			if (PlayerHandler.isOnline(invitedPlayer))
 			{
-				ChatChannel InviterChannel = ChatManager.ChannelHandler.getChannel(PlayerHandler.getData(Player.getName()).getChatChannel());
-				if (!InviterChannel.getName().equalsIgnoreCase(ChatManager.GLOBAL_CHAT_CHANNEL))
+				ChatChannel invitingChannel = ChatManager.ChannelHandler.getChannel(PlayerHandler.getData(playerName).getChatChannel());
+				String invitingChannelName = invitingChannel.getName();
+				if (!invitingChannelName.equalsIgnoreCase(ChatManager.GLOBAL_CHAT_CHANNEL))
 				{
-					if (ChatManager.ChannelHandler.addChannelInvitation(InviterChannel.getName(), Player.getName(), Invited))
+					if (ChatManager.ChannelHandler.addChannelInvitation(invitingChannelName, playerName, invitedPlayer))
 					{
-						PlayerHandler.getPlayer(Invited).sendMessage(ChatColor.GREEN + Player.getName() + ChatColor.YELLOW + " has invited you to join their chat channel");
-						PlayerHandler.getPlayer(Invited).sendMessage(ChatColor.YELLOW + "To accept, type " + ChatColor.GREEN + "/channel accept");
-						PlayerHandler.getPlayer(Invited).sendMessage(ChatColor.YELLOW + "To deny type " + ChatColor.RED + "/channel deny");
-						Player.sendMessage(ChatColor.GREEN + Invited + " has been invited to join your channel.");
+						PlayerHandler.getPlayer(invitedPlayer).sendMessage(StringUtil.formatColorCodes(String.format("&a{0}&e has invited you to join their chat channel.", playerDisplayName)));
+						PlayerHandler.getPlayer(invitedPlayer).sendMessage(StringUtil.formatColorCodes("&eTo accept, type &a/channel accept"));
+						PlayerHandler.getPlayer(invitedPlayer).sendMessage(StringUtil.formatColorCodes("&eTo deny type &c/channel deny"));
+						player.sendMessage(StringUtil.formatColorCodes(String.format("&a{0} has been invited to join your channel.", playerDisplayName)));
 					}
 					else
 					{
-						Player.sendMessage(ChatColor.RED + "Failed to invite " + ChatColor.YELLOW + Invited + ChatColor.RED + " to your channel.");
+						player.sendMessage(StringUtil.formatColorCodes(String.format("&cFailed to invite &e{0}&c to your channel.",invitedPlayer)));
 					}
 				}
-			}
-			else
-			{
-				Player.sendMessage(ChatColor.RED + Invited + " is offline; The player needs to be online to invite them to your channel.");
-			}
-		}
-		else
-		{
-			Player.sendMessage(ChatColor.RED + "Proper usage is " + ChatColor.YELLOW + "/channel invite <name>");
-		}
-	}
-	
-	@SubCommandHandler(name = "accept", parent = "channel")
-	public void AcceptInvitationChannel(Player Player, String[] Args)
-	{
-		if (ChatManager.ChannelHandler.hasChannelInvitation(Player.getName()))
-		{
-			ChannelInvitation Invite = ChatManager.ChannelHandler.getInvitedChannel(Player.getName());
-			if (PlayerHandler.isOnline(Invite.getInviter()))
-			{
-				if (ChatManager.ChannelHandler.acceptChannelInvitation(Player.getName()))
+				else
 				{
-					Player.sendMessage(ChatColor.GREEN + "You've joined the chat channel!");
-					PlayerHandler.getPlayer(Invite.getInviter()).sendMessage(ChatColor.GREEN + Player.getName() + " has accepted your channel invitation!");
+					player.sendMessage(StringUtil.formatColorCodes("&cYou can't invite players to join the global chat channel."));
 				}
 			}
 			else
 			{
-				Player.sendMessage(ChatColor.RED + "This invitation has expired; " + Invite.getInviter() + " is offline.");
-				ChatManager.ChannelHandler.removeChannelInvitation(Player.getName());
+				player.sendMessage(StringUtil.formatColorCodes(String.format("&e{0} &cis offline; &e{0} &cneeds to be online to invite them to your channel",invitedPlayer)));
 			}
 		}
 		else
 		{
-			Player.sendMessage(ChatColor.RED + "You weren't invited to join any channels.");
+			player.sendMessage(StringUtil.formatColorCodes("&cThe proper usage is &e/channel invite <name>"));
 		}
 	}
 	
-	@SubCommandHandler(name = "deny", parent = "channel")
-	public void DenyInvitationChannel(Player Player, String[] Args)
+	@SubCommandHandler(name = "accept", parent = "channel", permission = "chatmanager.channel.invite")
+	public void acceptChannelInvitation(Player player, String[] commandArgs)
 	{
-		if (ChatManager.ChannelHandler.hasChannelInvitation(Player.getName()))
+		String playerName = player.getName();
+		String playerDisplayName = player.getDisplayName();
+		if (ChatManager.ChannelHandler.hasChannelInvitation(playerName))
 		{
-			ChannelInvitation Invite = ChatManager.ChannelHandler.getInvitedChannel(Player.getName());
-			if (PlayerHandler.isOnline(Invite.getInviter()))
+			ChannelInvitation channelInvitation = ChatManager.ChannelHandler.getInvitedChannel(playerName);
+			String channelInviter = channelInvitation.getInviter();
+			if (PlayerHandler.isOnline(channelInviter))
 			{
-				PlayerHandler.getPlayer(Invite.getInviter()).sendMessage(ChatColor.YELLOW + Player.getName() + ChatColor.RED + " has declined your channel invitation.");
+				if (ChatManager.ChannelHandler.acceptChannelInvitation(playerName))
+				{
+					player.sendMessage(StringUtil.formatColorCodes("&aYou've joined the chat channel!"));
+					PlayerHandler.getPlayer(channelInviter).sendMessage(StringUtil.formatColorCodes(String.format("&a{0} has accepted your channel invitation!",playerDisplayName)));
+				}
+				else
+				{
+					player.sendMessage(StringUtil.formatColorCodes("&eFailed to accept channel invitation; Did the invitation expire?"));
+				}
 			}
-			ChatManager.ChannelHandler.removeChannelInvitation(Player.getName());
-			Player.sendMessage(ChatColor.YELLOW + "You've declined the channel invitation from " + ChatColor.RED + Invite.getInviter());
+			else
+			{
+				player.sendMessage(StringUtil.formatColorCodes(String.format("&cThis invitation has expired; {0} is offline.",channelInviter)));
+				ChatManager.ChannelHandler.removeChannelInvitation(playerName);
+			}
 		}
 		else
 		{
-			Player.sendMessage(ChatColor.RED + "You don't have any channel invitations.");
+			player.sendMessage(StringUtil.formatColorCodes("&cYou weren't invited to join any channels."));
+		}
+	}
+	
+	@SubCommandHandler(name = "deny", parent = "channel", permission = "chatmanager.channel.invite")
+	public void denyInvitationCommand(Player player, String[] commandArgs)
+	{
+		String playerName = player.getName();
+		String playerDisplayName = player.getDisplayName();
+		if (ChatManager.ChannelHandler.hasChannelInvitation(player.getName()))
+		{
+			ChannelInvitation channelInvitation = ChatManager.ChannelHandler.getInvitedChannel(playerName);
+			String channelInviter = channelInvitation.getInviter();
+			if (PlayerHandler.isOnline(channelInviter))
+			{
+				PlayerHandler.getPlayer(channelInviter).sendMessage(StringUtil.formatColorCodes(String.format("&e{0}&c has declined your channel invitation.",playerDisplayName)));
+			}
+			ChatManager.ChannelHandler.removeChannelInvitation(playerName);
+			player.sendMessage(StringUtil.formatColorCodes(String.format("&eYou've declined the channel invitation from &c{0}", channelInviter)));
+		}
+		else
+		{
+			player.sendMessage(StringUtil.formatColorCodes("&cYou don't have any channel invitations."));
 		}
 	}
 }

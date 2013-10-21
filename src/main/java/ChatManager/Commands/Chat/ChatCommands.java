@@ -17,18 +17,19 @@ public class ChatCommands
 		usage = "/msg <player> <msg> to send a player a message"
 		//permission = "vaeconnetwork.chat.message"
 	)
-	public void Message(Player Player, String[] Args)
+	public void messageCommand(Player player, String[] commandArgs)
 	{
-		if (!Args[0].isEmpty())
+		if (!commandArgs[0].isEmpty())
 		{
-			String Name = Args[0];
-			if (!Args[1].isEmpty())
+			String messagingPlayer = commandArgs[0];
+			if (!commandArgs[1].isEmpty())
 			{
-				String Message = Args[1];
-				if (PlayerHandler.isOnline(Name))
+				String Message = commandArgs[1];
+				if (PlayerHandler.isOnline(messagingPlayer))
 				{
-					PlayerHandler.getPlayer(Name).sendMessage(ChatColor.WHITE + "[" + ChatColor.YELLOW + Player.getName() + ChatColor.AQUA + " -> " + ChatColor.GREEN + "You" + ChatColor.WHITE + "] " + Message);
+					PlayerHandler.getPlayer(messagingPlayer).sendMessage(ChatColor.WHITE + "[" + ChatColor.YELLOW + player.getDisplayName()	 + ChatColor.AQUA + " -> " + ChatColor.GREEN + "You" + ChatColor.WHITE + "] " + Message);
 				}
+				PlayerHandler.getPlayer(messagingPlayer).sendMessage(ChatColor.WHITE + "[" + ChatColor.YELLOW + "You" + ChatColor.AQUA + " -> " + ChatColor.GREEN + player.getDisplayName() + ChatColor.WHITE + "] " + Message);
 			}
 		}
 	}
