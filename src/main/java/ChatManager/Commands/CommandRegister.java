@@ -11,7 +11,7 @@ public class CommandRegister
 	public CommandRegister(JavaPlugin Plugin)
 	{
 		CommandController.registerCommands(Plugin, new ChannelCommands());
-		CommandController.registerCommands(Plugin, new ChatCommands());
+		//CommandController.registerCommands(Plugin, new ChatCommands());
 	}
 
 }

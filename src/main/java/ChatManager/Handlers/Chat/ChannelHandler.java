@@ -1,6 +1,6 @@
 package ChatManager.Handlers.Chat;
 
-import org.bukkit.Bukkit;
+import ChatManager.Handlers.Util.StringUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -17,104 +17,104 @@ import java.util.*;
 
 public class ChannelHandler
 {
-	private Map<String, ChatChannel> ChatChannelList = new HashMap<String, ChatChannel>();
-	private Map<String, ChannelInvitation> ChannelInvitations = new HashMap<String, ChannelInvitation>();
-	private Cooldown InvitationCooldown = new Cooldown(25);
+	private Map<String, ChatChannel> chatChannels = new HashMap<String, ChatChannel>();
+	private Map<String, ChannelInvitation> channelInvitations = new HashMap<String, ChannelInvitation>();
+	private Cooldown invitationCooldown = new Cooldown(25);
 
 	/**
 	 * 
 	 */
     public ChannelHandler()
     {
-    	ChatChannel Global = new ChatChannel("GLOBAL","");
-    	Global.setJoinLeaveMessages(false);
-    	Global.setPermanant(true);
-	    this.addChannel(Global);
+    	ChatChannel globalChat = new ChatChannel("GLOBAL","");
+    	globalChat.setHasJoinLeaveMessages(false);
+    	globalChat.setPermanent(true);
+	    this.addChannel(globalChat);
     }
 
     /**
      * 
-     * @param Channels
+     * @param chatChannels
      */
-	public void addChannel(ChatChannel... Channels)
+	public void addChannel(ChatChannel... chatChannels)
 	{
-		for (ChatChannel ChatChannel : Channels)
+		for (ChatChannel chatChannel : chatChannels)
 		{
-			this.ChatChannelList.put(ChatChannel.getName(),ChatChannel);
+			this.chatChannels.put(chatChannel.getName(), chatChannel);
 		}
 	}
 
 	/**
 	 * 
-	 * @param Name
+	 * @param channelName
 	 * @return
 	 */
-	public boolean isChannel(String Name)
+	public boolean isChannel(String channelName)
 	{
-		return this.ChatChannelList.containsKey(Name);
+		return this.chatChannels.containsKey(channelName);
 	}
 
 	/**
 	 * 
-	 * @param Channel
+	 * @param chatChannel
 	 * @return
 	 */
-	public boolean isChannel(ChatChannel Channel)
+	public boolean isChannel(ChatChannel chatChannel)
 	{
-		return this.isChannel(Channel.getName());
+		return this.isChannel(chatChannel.getName());
 	}
 
 	/**
 	 * 
-	 * @param Channel
+	 * @param chatChannel
 	 */
-	public void removeChannel(ChatChannel Channel)
+	public void removeChannel(ChatChannel chatChannel)
 	{
-		Channel.sendToMembers(ChatColor.YELLOW + "This channel has been deleted, you were moved to the global chat");
-		for (String Member : Channel.getMembers())
+		chatChannel.sendToMembers(ChatColor.YELLOW + "This channel's been deleted, you were moved to the global chat");
+		for (String chatMember : chatChannel.getChatMembers())
 		{
-			if (PlayerHandler.hasData(Member))
+			if (PlayerHandler.hasData(chatMember))
 			{
-				cPlayer Player = PlayerHandler.getData(Member);
+				cPlayer Player = PlayerHandler.getData(chatMember);
 				Player.setChatChannel(ChatManager.GLOBAL_CHAT_CHANNEL);
 			}
 		}
-		this.ChatChannelList.remove(Channel.getName());
+		this.chatChannels.remove(chatChannel.getName());
 	}
 
 	/**
 	 * 
-	 * @param Channel
+	 * @param channelName
 	 */
-	public void removeChannel(String Channel)
+	public void removeChannel(String channelName)
 	{
-		if (isChannel(Channel))
+		if (isChannel(channelName))
 		{
-			this.removeChannel(this.ChatChannelList.get(Channel));
+			this.removeChannel(this.chatChannels.get(channelName));
 		}
 	}
 
 	/**
 	 * 
-	 * @param Name
+	 * @param channelName
 	 * @return
 	 */
-	public ChatChannel getChannel(String Name)
+	public ChatChannel getChannel(String channelName)
 	{
-		return this.ChatChannelList.get(Name);
+		return this.chatChannels.get(channelName);
 	}
 
 	/**
 	 * 
-	 * @param Player
-	 * @param Channel
+	 * @param player
+	 * @param chatChannel
 	 * @return
 	 */
-	public boolean addPlayerToChannel(Player Player, ChatChannel Channel)
+	public boolean addPlayerToChannel(Player player, ChatChannel chatChannel)
 	{
-		if (isChannel(Channel))
+		if (isChannel(chatChannel))
 		{
-			Channel.addMember(Player.getName());
+			chatChannel.addMember(player.getName());
 			return true;
 		}
 		return false;
@@ -122,15 +122,15 @@ public class ChannelHandler
 	
 	/**
 	 * 
-	 * @param Player
-	 * @param Channel
+	 * @param playerName
+	 * @param chatChannel
 	 * @return
 	 */
-	public boolean addPlayerToChannel(String Player, ChatChannel Channel)
+	public boolean addPlayerToChannel(String playerName, ChatChannel chatChannel)
 	{
-		if (isChannel(Channel))
+		if (isChannel(chatChannel))
 		{
-			Channel.addMember(Player);
+			chatChannel.addMember(playerName);
 			return true;
 		}
 		return false;
@@ -138,84 +138,86 @@ public class ChannelHandler
 	
 	/**
 	 * 
-	 * @param Player
+	 * @param playerName
 	 * @return
 	 */
-	public boolean hasChannelInvitation(String Player)
+	public boolean hasChannelInvitation(String playerName)
 	{
-		return this.ChannelInvitations.containsKey(Player);
+		return this.channelInvitations.containsKey(playerName);
 	}
 	
 	/**
 	 * 
-	 * @param Player
+	 * @param playerName
 	 * @return
 	 */
-	public ChannelInvitation getInvitedChannel(String Player)
+	public ChannelInvitation getInvitedChannel(String playerName)
 	{
-		return this.ChannelInvitations.get(Player);
+		return this.channelInvitations.get(playerName);
 	}
 	
 	/**
 	 * 
-	 * @param Player
+	 * @param playerName
 	 */
-	public void removeChannelInvitation(String Player)
+	public void removeChannelInvitation(String playerName)
 	{
-		if (this.hasChannelInvitation(Player))
+		if (this.hasChannelInvitation(playerName))
 		{
-			this.ChannelInvitations.remove(Player);
+			this.channelInvitations.remove(playerName);
 		}
 	}
 	
 	/**
 	 * 
-	 * @param Channel
-	 * @param Inviter
-	 * @param Invited
+	 * @param channelName
+	 * @param invitingUser
+	 * @param userInvited
 	 */
-	public boolean addChannelInvitation(String Channel, String Inviter, String Invited)
+	public boolean addChannelInvitation(String channelName, String invitingUser, String userInvited)
 	{
-		if (!this.isOnChannelInviteCooldown(Inviter))
+		if (!this.isOnChannelInviteCooldown(invitingUser))
 		{
-			this.ChannelInvitations.put(Invited, new ChannelInvitation(Channel,Inviter,Invited));
-			this.setOnInviteCooldown(Inviter);
+			this.channelInvitations.put(userInvited, new ChannelInvitation(channelName, invitingUser, userInvited));
+			this.setOnInviteCooldown(invitingUser);
 			return true;
 		}
 		return false;
 	}
 	
-	public void setOnInviteCooldown(String Inviter)
+	public void setOnInviteCooldown(String invitingUser)
 	{
-		this.InvitationCooldown.SetOnCooldown(Inviter);
+		this.invitationCooldown.setOnCooldown(invitingUser);
 	}
 	
-	public boolean isOnChannelInviteCooldown(String Inviter)
+	public boolean isOnChannelInviteCooldown(String invitingUser)
 	{
-		return this.InvitationCooldown.IsOnCooldown(Inviter);
+		return this.invitationCooldown.isOnCooldown(invitingUser);
 	}
 	
-	public boolean acceptChannelInvitation(String Player)
+	public boolean acceptChannelInvitation(String playerName)
 	{
-		if (PlayerHandler.hasData(Player))
+		if (PlayerHandler.hasData(playerName))
 		{
-			cPlayer cPlayer = PlayerHandler.getData(Player);
-			if (this.hasChannelInvitation(Player))
+			cPlayer cPlayer = PlayerHandler.getData(playerName);
+			if (this.hasChannelInvitation(playerName))
 			{
-				ChannelInvitation Invitation = this.getInvitedChannel(Player);
-				if (!cPlayer.getChatChannel().equalsIgnoreCase(Invitation.getChannelName()))
+				ChannelInvitation chatInvitation = this.getInvitedChannel(playerName);
+				String invitedChannelName = chatInvitation.getChannelName();
+
+				if (!cPlayer.getChatChannel().equalsIgnoreCase(invitedChannelName))
 				{
-					ChatChannel CurrentChannel = ChatManager.ChannelHandler.getChannel(cPlayer.getChatChannel());
-					ChannelLeaveEvent Event = new ChannelLeaveEvent(CurrentChannel,PlayerHandler.getPlayer(Player));
-					ChannelEventHandler.HandleChannelLeaveEvent(Event);
+					ChatChannel playerCurrentChannel = ChatManager.channelHandler.getChannel(cPlayer.getChatChannel());
+					ChannelLeaveEvent channelLeaveEvent = new ChannelLeaveEvent(playerCurrentChannel,PlayerHandler.getPlayer(playerName));
+					ChannelEventHandler.handleChannelLeaveEvent(channelLeaveEvent);
 					
-					ChatManager.ChannelHandler.addPlayerToChannel(Event.getPlayer(), Invitation.getChannel());
-					if (Invitation.getChannel().allowJoinLeaveMessages())
+					ChatManager.channelHandler.addPlayerToChannel(playerName, chatInvitation.getChatChannel());
+					if (chatInvitation.getChatChannel().allowJoinLeaveMessages())
 					{
-						Invitation.getChannel().sendToMembers(ChatColor.GRAY + Player + " has joined the Channel!");
+						chatInvitation.getChatChannel().sendToMembers(StringUtil.formatColorCodes(String.format("&7{0} has joined the Channel!",playerName)));
 					}
-					PlayerHandler.getData(Player).setChatChannel(Invitation.getChannelName());
-					PlayerHandler.getPlayer(Player).sendMessage("You chat channel is now: " + Invitation.getChannelName());
+					PlayerHandler.getData(playerName).setChatChannel(invitedChannelName);
+					PlayerHandler.getPlayer(playerName).sendMessage(StringUtil.formatColorCodes(String.format("&7You're now chatting in: &o{0}",invitedChannelName)));
 					return true;
 				}
 				else

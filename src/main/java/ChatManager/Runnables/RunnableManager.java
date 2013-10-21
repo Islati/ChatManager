@@ -7,56 +7,56 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class RunnableManager
 {
-	private JavaPlugin Plugin;
-	private HashMap<String, Integer> Tasks = new HashMap<String, Integer>();
+	private JavaPlugin plugin;
+	private HashMap<String, Integer> managedTasks = new HashMap<String, Integer>();
 	
-	public RunnableManager(JavaPlugin Plugin)
+	public RunnableManager(JavaPlugin plugin)
 	{
-		this.Plugin = Plugin;
+		this.plugin = plugin;
 	}
 	
-	public void RegisterSynchRepeatTask(String Name, Runnable Task, long DelayInTicks, long RepeatTimeInTicks)
+	public void registerSyncRepeatingTask(String taskName, Runnable task, long delayInTicks, long repeatTimeInTicks)
 	{
-		if (!Tasks.containsKey(Name))
+		if (!managedTasks.containsKey(taskName))
 		{
-			Tasks.put(Name, this.Plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.Plugin, Task, DelayInTicks, RepeatTimeInTicks));
+			managedTasks.put(taskName, this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, task, delayInTicks, repeatTimeInTicks));
 		}
 	}
 	
-	public void RegisterASynchRepeatTask(String Name, Runnable Task, long DelayInTicks, long RepeatTimeInTicks)
+	public void registerAsyncRepeatingTask(String taskName, Runnable task, long delayInTicks, long repeatTimeInTicks)
 	{
-		if (!Tasks.containsKey(Name))
+		if (!managedTasks.containsKey(taskName))
 		{
-			Tasks.put(Name, this.Plugin.getServer().getScheduler().scheduleAsyncRepeatingTask(this.Plugin, Task, DelayInTicks, RepeatTimeInTicks));
+			managedTasks.put(taskName, this.plugin.getServer().getScheduler().scheduleAsyncRepeatingTask(this.plugin, task, delayInTicks, repeatTimeInTicks));
 		}
 	}
 	
-	public void RunTaskNow(Runnable Task)
+	public void runTaskNow(Runnable taskToRun)
 	{
-		this.Plugin.getServer().getScheduler().runTask(this.Plugin, Task);
+		this.plugin.getServer().getScheduler().runTask(this.plugin, taskToRun);
 	}
 	
-	public void RunTaskAsynch(Runnable Task)
+	public void runTaskAsync(Runnable taskToRun)
 	{
-		this.Plugin.getServer().getScheduler().runTaskAsynchronously(this.Plugin, Task);
+		this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, taskToRun);
 	}
 	
-	public void RunTaskLater(Runnable Task, long DelayInTicks)
+	public void runTaskLater(Runnable task, long delayInTicks)
 	{
-		this.Plugin.getServer().getScheduler().runTaskLater(this.Plugin, Task, DelayInTicks);
+		this.plugin.getServer().getScheduler().runTaskLater(this.plugin, task, delayInTicks);
 	}
 	
-	public void RunTaskLaterAsynch(Runnable Task, long Delay)
+	public void runTaskLaterAsynch(Runnable task, long delayInTicks)
 	{
-		this.Plugin.getServer().getScheduler().runTaskLaterAsynchronously(this.Plugin, Task, Delay);
+		this.plugin.getServer().getScheduler().runTaskLaterAsynchronously(this.plugin, task, delayInTicks);
 	}
 	
-	public boolean CancelTask(String Name)
+	public boolean cancelTask(String taskName)
 	{
-		if (this.Tasks.containsKey(Name))
+		if (this.managedTasks.containsKey(taskName))
 		{
-			Bukkit.getScheduler().cancelTask(this.Tasks.get(Name));
-			this.Tasks.remove(Name);
+			Bukkit.getScheduler().cancelTask(this.managedTasks.get(taskName));
+			this.managedTasks.remove(taskName);
 			return true;
 		}
 		return false;

@@ -4,49 +4,47 @@ package ChatManager.Handlers.Player;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class PlayerHandler
 {
-	private static Map<String, cPlayer> PlayerMap = new HashMap<String,cPlayer>();
+	private static Map<String, cPlayer> playerData = new HashMap<String,cPlayer>();
     public PlayerHandler() { }
 
-	public static boolean hasData(String Name)
+	public static boolean hasData(String playerName)
 	{
-		return PlayerMap.containsKey(Name);
+		return playerData.containsKey(playerName);
 	}
 
-	public static cPlayer getData(String Name)
+	public static cPlayer getData(String playerName)
 	{
-		return PlayerMap.get(Name);
+		return playerData.get(playerName);
 	}
 
-	public static void addData(String Name)
+	public static void addData(String playerName)
 	{
-		if (!hasData(Name))
+		if (!hasData(playerName))
 		{
-			PlayerMap.put(Name, new cPlayer(Name));
+			playerData.put(playerName, new cPlayer(playerName));
 		}
 	}
 
-	public static void removeData(String Name)
+	public static void removeData(String playerName)
 	{
-		if (hasData(Name))
+		if (hasData(playerName))
 		{
-			PlayerMap.remove(Name);
+			playerData.remove(playerName);
 		}
 	}
 
-    public static boolean isOnline(String Name)
+    public static boolean isOnline(String playerName)
     {
-        return Bukkit.getOfflinePlayer(Name).isOnline();
+        return Bukkit.getOfflinePlayer(playerName).isOnline();
     }
     
-    public static Player getPlayer(String Name)
+    public static Player getPlayer(String playerName)
     {
-        return Bukkit.getPlayer(Name);
+        return Bukkit.getPlayer(playerName);
     }
 }

@@ -30,14 +30,14 @@ public abstract class AbstractChatFormat implements IChatFormat
     }
     
     @Override
-    public String getFormattedMessage(String Sender, String Message)
+    public String getFormattedMessage(String messageSender, String message)
     {
-        return StringUtils.replace(StringUtils.replaceOnce(this.Format, "%$1s", Sender), "%$2s", Message);
+        return StringUtils.replace(StringUtils.replaceOnce(this.Format, "%$1s", messageSender), "%$2s", message);
     }
     
     @Override
     public void setFormat(String Format)
     {
-	    this.Format = StringUtils.replaceOnce(StringUtils.replaceOnce(Format,SenderVariable.getVariable(), SenderVariable.getReplaces()),MessageVariable.getVariable(),MessageVariable.getReplaces());
+	    this.Format = StringUtils.replaceOnce(StringUtils.replaceOnce(Format,SenderVariable.getChatVariable(), SenderVariable.getVariableReplace()),MessageVariable.getChatVariable(),MessageVariable.getVariableReplace());
     }
 }

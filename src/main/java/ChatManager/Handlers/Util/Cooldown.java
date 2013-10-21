@@ -4,29 +4,30 @@ import java.util.HashMap;
 
 public class Cooldown
 {
-	private HashMap<String, Long> Cooldowns = new HashMap<String, Long>();
+	private HashMap<String, Long> cooldowns = new HashMap<String, Long>();
 	private int cooldownTime = 0;
 
-	public Cooldown(int CooldownTime)
+	public Cooldown(int cooldownTime)
 	{
-		this.cooldownTime = CooldownTime;
+		this.cooldownTime = cooldownTime;
 	}
 
-	public void SetOnCooldown(String Player)
+	public void setOnCooldown(String playerName)
 	{
-		this.Cooldowns.put(Player, Long.valueOf(System.currentTimeMillis() / 1000L));
+		this.cooldowns.put(playerName, Long.valueOf(System.currentTimeMillis() / 1000L));
 	}
 
-	public void SetCooldownTime(int CooldownTime)
+	public void setCooldownTime(int cooldownTime)
 	{
-		this.cooldownTime = CooldownTime;
+		this.cooldownTime = cooldownTime;
 	}
 
-	public double RemainingSeconds(String Player)
+	@Deprecated
+	public double remainingSeconds(String playerName)
 	{
-		if (this.Cooldowns.containsKey(Player))
+		if (this.cooldowns.containsKey(playerName))
 		{
-			double Last_Used = this.Cooldowns.get(Player).longValue();
+			double Last_Used = this.cooldowns.get(playerName).longValue();
 			long Time_Check = System.currentTimeMillis() / 1000L;
 			return Time_Check - Last_Used;
 		}
@@ -34,11 +35,12 @@ public class Cooldown
 		return 0.0D;
 	}
 
-	public double RemainingMinutes(String Player)
+	@Deprecated
+	public double remainingMinutes(String playerName)
 	{
-		if (this.Cooldowns.containsKey(Player))
+		if (this.cooldowns.containsKey(playerName))
 		{
-			double Last_Used = this.Cooldowns.get(Player).longValue();
+			double Last_Used = this.cooldowns.get(playerName).longValue();
 			long Time_Check = System.currentTimeMillis() / 1000L;
 			return (Time_Check - Last_Used) / 60.0D;
 		}
@@ -46,20 +48,14 @@ public class Cooldown
 		return 0.0D;
 	}
 
-	public boolean IsOnCooldown(String Player)
+	public boolean isOnCooldown(String playerName)
 	{
-		if (this.Cooldowns.containsKey(Player))
+		if (this.cooldowns.containsKey(playerName))
 		{
-			double Last_Used = this.Cooldowns.get(Player).longValue();
-			long Time_Check = System.currentTimeMillis() / 1000L;
-			if (Time_Check - Last_Used < this.cooldownTime)
-			{
-				return true;
-			}
-
-			return false;
+			double playerTimeStamp = this.cooldowns.get(playerName).longValue();
+			long timeStampSeconds = System.currentTimeMillis() / 1000L;
+			return (timeStampSeconds - playerTimeStamp < this.cooldownTime);
 		}
-
 		return false;
 	}
 }

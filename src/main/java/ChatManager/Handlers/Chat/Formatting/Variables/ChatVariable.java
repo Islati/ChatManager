@@ -2,34 +2,34 @@ package ChatManager.Handlers.Chat.Formatting.Variables;
 
 public class ChatVariable implements IChatVariable
 {
-    private String Variable = "";
-	private String Replaces = "";
+    private String chatVariable = "";
+	private String variableReplace = "";
 	private boolean isReplaceable = false;
 
-    public ChatVariable(String Variable)
+    public ChatVariable(String chatVariable)
     {
-        this.Variable = Variable;
+        this.chatVariable = chatVariable;
     }
 
-	public ChatVariable(String Variable, boolean isReplaceable, String Replaces)
+	public ChatVariable(String chatVariable, boolean isReplaceable, String variableReplace)
 	{
-		this.Variable = Variable;
+		this.chatVariable = chatVariable;
 		this.isReplaceable = isReplaceable;
-		this.Replaces = Replaces;
+		this.variableReplace = variableReplace;
 	}
 
     @Override
-    public String getVariable()
+    public String getChatVariable()
     {
-        return this.Variable;
+        return this.chatVariable;
     }
 
     @Override
-    public String getReplaces()
+    public String getVariableReplace()
     {
 	    if (isReplaceable())
 	    {
-		    return this.Replaces;
+		    return this.variableReplace;
 	    }
 	    else
 	    {

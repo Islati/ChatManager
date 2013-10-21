@@ -1,12 +1,9 @@
 package ChatManager.Events;
 
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerEvent;
 
 import ChatManager.Handlers.Chat.Channels.ChatChannel;
 
@@ -16,30 +13,30 @@ import ChatManager.Handlers.Chat.Channels.ChatChannel;
 public class ChannelJoinEvent extends Event implements Cancellable
 {
 	private static final HandlerList handlers = new HandlerList();
-	private Player Player;
-	private ChatChannel Channel;
+	private Player player;
+	private ChatChannel chatChannel;
 	private boolean isCancelled = false;
 
 	/**
 	 * 
-	 * @param Channel
-	 * @param Player
+	 * @param chatChannel
+	 * @param player
 	 */
-	public ChannelJoinEvent(ChatChannel Channel, Player Player)
+	public ChannelJoinEvent(ChatChannel chatChannel, Player player)
 	{
 		super(false);
-		this.Player = Player;
-		this.Channel = Channel;
+		this.player = player;
+		this.chatChannel = chatChannel;
 	}
 
 	public Player getPlayer()
 	{
-		return this.Player;
+		return this.player;
 	}
 
-	public ChatChannel getChannel()
+	public ChatChannel getChatChannel()
 	{
-		return this.Channel;
+		return this.chatChannel;
 	}
 
 	@Override

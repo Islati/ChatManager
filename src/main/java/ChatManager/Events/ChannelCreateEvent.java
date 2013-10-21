@@ -6,8 +6,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerEvent;
 
 import ChatManager.Handlers.Chat.Channels.ChatChannel;
 
@@ -17,40 +15,40 @@ import ChatManager.Handlers.Chat.Channels.ChatChannel;
 public class ChannelCreateEvent extends Event implements Cancellable
 {
 	private static final HandlerList handlers = new HandlerList();
-	private CommandSender Sender;
-	private ChatChannel Channel;
+	private CommandSender channelCreator;
+	private ChatChannel chatChannel;
 	private boolean isCancelled = false;
 
 	/**
 	 * 
-	 * @param Channel
-	 * @param Sender
+	 * @param chatChannel
+	 * @param channelCreator
 	 */
-	public ChannelCreateEvent(ChatChannel Channel, CommandSender Sender)
+	public ChannelCreateEvent(ChatChannel chatChannel, CommandSender channelCreator)
 	{
 		super(false);
-		this.Sender = Sender;
-		this.Channel = Channel;
+		this.channelCreator = channelCreator;
+		this.chatChannel = chatChannel;
 	}
 
 	public CommandSender getCreator()
 	{
-		return this.Sender;
+		return this.channelCreator;
 	}
 
-	public ChatChannel getChannel()
+	public ChatChannel getChatChannel()
 	{
-		return this.Channel;
+		return this.chatChannel;
 	}
 	
 	public boolean isSenderPlayer()
 	{
-		return (this.Sender instanceof Player);
+		return (this.channelCreator instanceof Player);
 	}
 	
 	public boolean isSenderConsole()
 	{
-		return (this.Sender instanceof ConsoleCommandSender);
+		return (this.channelCreator instanceof ConsoleCommandSender);
 	}
 
 	@Override

@@ -8,35 +8,43 @@ import org.bukkit.entity.Player;
  */
 public class cPlayer
 {
-	private String Name = "";
-	private String ChatChannel = "GLOBAL";
-	public cPlayer(String Name)
+	private String playerName = "";
+	private String chatChannel = "GLOBAL";
+	public cPlayer(String playerName)
 	{
-		this.Name = Name;
+		this.playerName = playerName;
 	}
 
-	public cPlayer(Player Player)
+	/**
+	 *
+	 * @param player
+	 */
+	public cPlayer(Player player)
 	{
-		this.Name = Player.getName();
+		this.playerName = player.getName();
 	}
 
 	public String getName()
 	{
-		return this.Name;
+		return this.playerName;
 	}
 
 	public String getChatChannel()
 	{
-		return this.ChatChannel;
+		return this.chatChannel;
 	}
 
-	public void setChatChannel(String Channel)
+	/**
+	 *
+	 * @param chatChannel
+	 */
+	public void setChatChannel(String chatChannel)
 	{
-		this.ChatChannel = Channel;
+		this.chatChannel = chatChannel;
 	}
 
 	public boolean isOnline()
 	{
-		return Bukkit.getOfflinePlayer(this.Name).isOnline();
+		return Bukkit.getOfflinePlayer(this.playerName).isOnline();
 	}
 }

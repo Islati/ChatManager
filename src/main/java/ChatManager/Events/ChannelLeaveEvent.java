@@ -1,12 +1,9 @@
 package ChatManager.Events;
 
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerEvent;
 
 import ChatManager.Handlers.Chat.Channels.ChatChannel;
 
@@ -17,25 +14,25 @@ public class ChannelLeaveEvent extends Event implements Cancellable
 {
 	private static final HandlerList handlers = new HandlerList();
 	private String Player;
-	private ChatChannel Channel;
+	private ChatChannel chatChannel;
 	private boolean isCancelled = false;
 
 	/**
 	 * 
-	 * @param Channel
-	 * @param Player
+	 * @param chatChannel
+	 * @param player
 	 */
-	public ChannelLeaveEvent(ChatChannel Channel, Player Player)
+	public ChannelLeaveEvent(ChatChannel chatChannel, Player player)
 	{
 		super(false);
-		this.Player = Player.getName();
-		this.Channel = Channel;
+		this.Player = player.getName();
+		this.chatChannel = chatChannel;
 	}
 	
-	public ChannelLeaveEvent(ChatChannel Channel, String Player)
+	public ChannelLeaveEvent(ChatChannel chatChannel, String playerName)
 	{
-		this.Channel = Channel;
-		this.Player = Player;
+		this.chatChannel = chatChannel;
+		this.Player = playerName;
 	}
 
 	public String getPlayer()
@@ -43,9 +40,9 @@ public class ChannelLeaveEvent extends Event implements Cancellable
 		return this.Player;
 	}
 
-	public ChatChannel getChannel()
+	public ChatChannel getChatChannel()
 	{
-		return this.Channel;
+		return this.chatChannel;
 	}
 
 	@Override

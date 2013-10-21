@@ -68,10 +68,10 @@ public class ChannelCommands
 			String channelName = commandArgs[1];
 			if (!channelName.equalsIgnoreCase("private"))
 			{
-				if (!ChatManager.ChannelHandler.isChannel(channelName))
+				if (!ChatManager.channelHandler.isChannel(channelName))
 				{
 					ChannelCreateEvent channelCreateEvent = new ChannelCreateEvent(new ChatChannel(channelName,"[" + channelName + "]"), player);
-					ChannelEventHandler.HandleChannelCreateEvent(channelCreateEvent);
+					ChannelEventHandler.handleChannelCreateEvent(channelCreateEvent);
 				}
 				else
 				{
@@ -83,11 +83,11 @@ public class ChannelCommands
 				if (commandArgs.length > 2 && !commandArgs[2].isEmpty())
 				{
 					String pChannelName = commandArgs[2];
-					if (!ChatManager.ChannelHandler.isChannel(pChannelName))
+					if (!ChatManager.channelHandler.isChannel(pChannelName))
 					{
 						ChatChannel privateChatChannel = new ChatChannel(pChannelName,ChatColor.GRAY + "[" + pChannelName + "]" + ChatColor.RESET,player.getName(),true);
 						ChannelCreateEvent Event = new ChannelCreateEvent(privateChatChannel,player);
-						ChannelEventHandler.HandleChannelCreateEvent(Event);
+						ChannelEventHandler.handleChannelCreateEvent(Event);
 					}
 					else
 					{
@@ -109,10 +109,10 @@ public class ChannelCommands
 		if (commandArgs.length > 1 && !commandArgs[1].isEmpty())
 		{
 			String channelName = commandArgs[1];
-			if (ChatManager.ChannelHandler.isChannel(channelName))
+			if (ChatManager.channelHandler.isChannel(channelName))
 			{
-				ChannelDeleteEvent channelDeleteEvent = new ChannelDeleteEvent(ChatManager.ChannelHandler.getChannel(channelName), player);
-				ChannelEventHandler.HandleChannelDeleteEvent(channelDeleteEvent);
+				ChannelDeleteEvent channelDeleteEvent = new ChannelDeleteEvent(ChatManager.channelHandler.getChannel(channelName), player);
+				ChannelEventHandler.handleChannelDeleteEvent(channelDeleteEvent);
 			}
 			else
 			{
@@ -129,14 +129,14 @@ public class ChannelCommands
 			if (!commandArgs[1].isEmpty())
 			{
 				String channelName = commandArgs[1];
-				if (!ChatManager.ChannelHandler.isChannel(channelName))
+				if (!ChatManager.channelHandler.isChannel(channelName))
 				{
 					player.sendMessage("Chat channel " + channelName + " doesn't exist");
 				}
 				else
 				{
-					ChannelJoinEvent channelJoinEvent = new ChannelJoinEvent(ChatManager.ChannelHandler.getChannel(channelName), player);
-					ChannelEventHandler.HandleChannelJoinEvent(channelJoinEvent);
+					ChannelJoinEvent channelJoinEvent = new ChannelJoinEvent(ChatManager.channelHandler.getChannel(channelName), player);
+					ChannelEventHandler.handleChannelJoinEvent(channelJoinEvent);
 				}
 			}
 		}
@@ -145,8 +145,8 @@ public class ChannelCommands
 	@SubCommandHandler(name = "leave", parent = "channel", permission = "chatmanager.channel.join")
 	public void leaveChannelCommand(Player player, String[] commandArgs)
 	{
-		ChannelLeaveEvent channelLeaveEvent = new ChannelLeaveEvent(ChatManager.ChannelHandler.getChannel(PlayerHandler.getData(player.getName()).getChatChannel()), player);
-		ChannelEventHandler.HandleChannelLeaveEvent(channelLeaveEvent);
+		ChannelLeaveEvent channelLeaveEvent = new ChannelLeaveEvent(ChatManager.channelHandler.getChannel(PlayerHandler.getData(player.getName()).getChatChannel()), player);
+		ChannelEventHandler.handleChannelLeaveEvent(channelLeaveEvent);
 	}
 	
 	@SubCommandHandler(name = "invite", parent = "channel", permission = "chatmanager.channel.invite")
@@ -159,11 +159,11 @@ public class ChannelCommands
 			String invitedPlayer = commandArgs[1];
 			if (PlayerHandler.isOnline(invitedPlayer))
 			{
-				ChatChannel invitingChannel = ChatManager.ChannelHandler.getChannel(PlayerHandler.getData(playerName).getChatChannel());
+				ChatChannel invitingChannel = ChatManager.channelHandler.getChannel(PlayerHandler.getData(playerName).getChatChannel());
 				String invitingChannelName = invitingChannel.getName();
 				if (!invitingChannelName.equalsIgnoreCase(ChatManager.GLOBAL_CHAT_CHANNEL))
 				{
-					if (ChatManager.ChannelHandler.addChannelInvitation(invitingChannelName, playerName, invitedPlayer))
+					if (ChatManager.channelHandler.addChannelInvitation(invitingChannelName, playerName, invitedPlayer))
 					{
 						PlayerHandler.getPlayer(invitedPlayer).sendMessage(StringUtil.formatColorCodes(String.format("&a{0}&e has invited you to join their chat channel.", playerDisplayName)));
 						PlayerHandler.getPlayer(invitedPlayer).sendMessage(StringUtil.formatColorCodes("&eTo accept, type &a/channel accept"));
@@ -196,13 +196,13 @@ public class ChannelCommands
 	{
 		String playerName = player.getName();
 		String playerDisplayName = player.getDisplayName();
-		if (ChatManager.ChannelHandler.hasChannelInvitation(playerName))
+		if (ChatManager.channelHandler.hasChannelInvitation(playerName))
 		{
-			ChannelInvitation channelInvitation = ChatManager.ChannelHandler.getInvitedChannel(playerName);
-			String channelInviter = channelInvitation.getInviter();
+			ChannelInvitation channelInvitation = ChatManager.channelHandler.getInvitedChannel(playerName);
+			String channelInviter = channelInvitation.getInvitingPlayer();
 			if (PlayerHandler.isOnline(channelInviter))
 			{
-				if (ChatManager.ChannelHandler.acceptChannelInvitation(playerName))
+				if (ChatManager.channelHandler.acceptChannelInvitation(playerName))
 				{
 					player.sendMessage(StringUtil.formatColorCodes("&aYou've joined the chat channel!"));
 					PlayerHandler.getPlayer(channelInviter).sendMessage(StringUtil.formatColorCodes(String.format("&a{0} has accepted your channel invitation!",playerDisplayName)));
@@ -215,7 +215,7 @@ public class ChannelCommands
 			else
 			{
 				player.sendMessage(StringUtil.formatColorCodes(String.format("&cThis invitation has expired; {0} is offline.",channelInviter)));
-				ChatManager.ChannelHandler.removeChannelInvitation(playerName);
+				ChatManager.channelHandler.removeChannelInvitation(playerName);
 			}
 		}
 		else
@@ -229,15 +229,15 @@ public class ChannelCommands
 	{
 		String playerName = player.getName();
 		String playerDisplayName = player.getDisplayName();
-		if (ChatManager.ChannelHandler.hasChannelInvitation(player.getName()))
+		if (ChatManager.channelHandler.hasChannelInvitation(player.getName()))
 		{
-			ChannelInvitation channelInvitation = ChatManager.ChannelHandler.getInvitedChannel(playerName);
-			String channelInviter = channelInvitation.getInviter();
+			ChannelInvitation channelInvitation = ChatManager.channelHandler.getInvitedChannel(playerName);
+			String channelInviter = channelInvitation.getInvitingPlayer();
 			if (PlayerHandler.isOnline(channelInviter))
 			{
 				PlayerHandler.getPlayer(channelInviter).sendMessage(StringUtil.formatColorCodes(String.format("&e{0}&c has declined your channel invitation.",playerDisplayName)));
 			}
-			ChatManager.ChannelHandler.removeChannelInvitation(playerName);
+			ChatManager.channelHandler.removeChannelInvitation(playerName);
 			player.sendMessage(StringUtil.formatColorCodes(String.format("&eYou've declined the channel invitation from &c{0}", channelInviter)));
 		}
 		else

@@ -7,8 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerEvent;
 
 import ChatManager.Handlers.Chat.Channels.ChatChannel;
 
@@ -18,42 +16,42 @@ import ChatManager.Handlers.Chat.Channels.ChatChannel;
 public class ChannelDeleteEvent extends Event implements Cancellable
 {
 	private static final HandlerList handlers = new HandlerList();
-	private CommandSender Sender;
-	private ChatChannel Channel;
+	private CommandSender channelDeleter;
+	private ChatChannel chatChannel;
 	private boolean isCancelled = false;
-	private ChannelDeleteReason DeleteReason;
+	private ChannelDeleteReason deleteReason;
 
 	/**
 	 * 
-	 * @param Channel
-	 * @param Sender
+	 * @param chatChannel
+	 * @param channelDeleter
 	 */
-	public ChannelDeleteEvent(ChatChannel Channel, CommandSender Sender)
+	public ChannelDeleteEvent(ChatChannel chatChannel, CommandSender channelDeleter)
 	{
 		super(false);
-		this.Sender = (Sender == null) ? Bukkit.getConsoleSender() : Sender; 
-		this.Channel = Channel;
-		if (Channel.getMembers().size() <= 0)
+		this.channelDeleter = (channelDeleter == null) ? Bukkit.getConsoleSender() : channelDeleter;
+		this.chatChannel = chatChannel;
+		if (chatChannel.getChatMembers().size() <= 0)
 		{
-			this.DeleteReason = ChannelDeleteReason.EMPTY;
+			this.deleteReason = ChannelDeleteReason.EMPTY;
 		}
 		else
 		{
-			if (Sender instanceof Player)
+			if (channelDeleter instanceof Player)
 			{
-				Player Player = (Player)Sender;
-				if (!Channel.getCreator().equalsIgnoreCase(Player.getName()))
+				Player player = (Player) channelDeleter;
+				if (!chatChannel.getCreator().equalsIgnoreCase(player.getName()))
 				{
-					this.DeleteReason = ChannelDeleteReason.DELETED_BY_STAFF;
+					this.deleteReason = ChannelDeleteReason.DELETED_BY_STAFF;
 				}
 				else
 				{
-					this.DeleteReason = ChannelDeleteReason.DELETED_BY_OWNER;
+					this.deleteReason = ChannelDeleteReason.DELETED_BY_OWNER;
 				}
 			}
 			else
 			{
-				this.DeleteReason = ChannelDeleteReason.OTHER;
+				this.deleteReason = ChannelDeleteReason.OTHER;
 			}
 		}
 	}
@@ -68,27 +66,27 @@ public class ChannelDeleteEvent extends Event implements Cancellable
 
 	public CommandSender getDeleter()
 	{
-		return this.Sender;
+		return this.channelDeleter;
 	}
 	
 	public boolean isSenderPlayer()
 	{
-		return (this.Sender instanceof Player);
+		return (this.channelDeleter instanceof Player);
 	}
 	
 	public boolean isSenderConsole()
 	{
-		return (this.Sender instanceof ConsoleCommandSender);
+		return (this.channelDeleter instanceof ConsoleCommandSender);
 	}
 
-	public ChatChannel getChannel()
+	public ChatChannel getChatChannel()
 	{
-		return this.Channel;
+		return this.chatChannel;
 	}
 	
 	public ChannelDeleteReason getDeleteReason()
 	{
-		return this.DeleteReason;
+		return this.deleteReason;
 	}
 
 	@Override

@@ -2,34 +2,34 @@ package ChatManager.Handlers.Chat.Channels;
 
 public class ChannelInvitation
 {
-	private String Inviter = "";
-	private String Invited = "";
-	private String Channel = "";
+	private String invitingPlayer = "";
+	private String invitedPlayer = "";
+	private String chatChannel = "";
 	
-	public ChannelInvitation(String Channel, String Inviter, String Invited)
+	public ChannelInvitation(String chatChannel, String invitingPlayer, String invitedPlayer)
 	{
-		this.Channel = Channel;
-		this.Inviter = Inviter;
-		this.Invited = Invited;
+		this.chatChannel = chatChannel;
+		this.invitingPlayer = invitingPlayer;
+		this.invitedPlayer = invitedPlayer;
 	}
 	
-	public ChatChannel getChannel()
+	public ChatChannel getChatChannel()
 	{
-		return (ChatManager.ChatManager.ChannelHandler.getChannel(this.Channel));
+		return (ChatManager.ChatManager.channelHandler.getChannel(this.chatChannel));
 	}
 	
 	public String getChannelName()
 	{
-		return this.Channel;
+		return this.chatChannel;
 	}
 	
-	public String getInviter()
+	public String getInvitingPlayer()
 	{
-		return this.Inviter;
+		return this.invitingPlayer;
 	}
 	
-	public String getInvited()
+	public String getInvitedPlayer()
 	{
-		return this.Invited;
+		return this.invitedPlayer;
 	}
 }

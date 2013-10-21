@@ -1,8 +1,8 @@
 package ChatManager.Events.Handler;
 
+import ChatManager.Commands.CommandPermissions;
+import ChatManager.Handlers.Util.StringUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 
 import ChatManager.ChatManager;
 import ChatManager.Events.ChannelChatEvent;
@@ -10,162 +10,194 @@ import ChatManager.Events.ChannelCreateEvent;
 import ChatManager.Events.ChannelDeleteEvent;
 import ChatManager.Events.ChannelJoinEvent;
 import ChatManager.Events.ChannelLeaveEvent;
-import ChatManager.Handlers.Chat.ChannelHandler;
 import ChatManager.Handlers.Chat.Channels.ChatChannel;
 import ChatManager.Handlers.Player.PlayerHandler;
-import ChatManager.Handlers.Player.cPlayer;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class ChannelEventHandler
 {
-	
-	public static void HandleChannelChatEvent(ChannelChatEvent Event)
+	/**
+	 *
+	 * @param channelChatEvent
+	 */
+	public static void handleChannelChatEvent(ChannelChatEvent channelChatEvent)
 	{
-		Bukkit.getServer().getPluginManager().callEvent(Event);
-		if (!Event.isCancelled())
+		Bukkit.getServer().getPluginManager().callEvent(channelChatEvent);
+		if (!channelChatEvent.isCancelled())
 		{
-			Event.getChannel().sendToMembers(Event.getPlayer().getName(),Event.getMessage()); //Send the message to all users in the chat
+			channelChatEvent.getChatChannel().sendToMembers(channelChatEvent.getPlayer().getName(),channelChatEvent.getMessage()); //Send the message to all users in the chat
 		}
 	}
-	
-	public static void HandleChannelDeleteEvent(ChannelDeleteEvent Event)
+
+	/**
+	 *
+	 * @param event
+	 */
+	public static void handleChannelDeleteEvent(ChannelDeleteEvent event)
 	{
-		Bukkit.getServer().getPluginManager().callEvent(Event);
-		if (!Event.isCancelled())
+		Bukkit.getServer().getPluginManager().callEvent(event);
+
+		CommandSender channelDeleter = event.getDeleter();
+		ChatChannel channelToDelete = event.getChatChannel();
+		String channelDeleterName = channelToDelete.getName();
+
+		if (!event.isCancelled())
 		{
-			ChatChannel Channel = Event.getChannel();
-			if (!Channel.getName().equalsIgnoreCase(ChatManager.GLOBAL_CHAT_CHANNEL) && !Channel.isPermanant())
+			ChatChannel chatChannel = event.getChatChannel();
+			if (!chatChannel.getName().equalsIgnoreCase(ChatManager.GLOBAL_CHAT_CHANNEL) && !chatChannel.isPermanent())
 			{
-				if (Channel.getCreator().equalsIgnoreCase(Event.getDeleter().getName()))
+				if (chatChannel.getCreator().equalsIgnoreCase(channelDeleterName))
 				{
-					ChatManager.ChannelHandler.removeChannel(Event.getChannel()); //Call the channel-handler to remove the channel
-					Event.getDeleter().sendMessage(ChatColor.GREEN + "Channel Deleted"); //Tell the sender that the channel was deleted
+					ChatManager.channelHandler.removeChannel(channelToDelete); //Call the channel-handler to remove the channel
+					channelDeleter.sendMessage(StringUtil.formatColorCodes("&aChannel Deleted")); //Tell the sender that the channel was deleted
 				}
 				else
 				{
-					if (Event.getDeleter().hasPermission("chatmanager.channels.delete"))
+					if (channelDeleter.hasPermission(CommandPermissions.CHANNEL_DELETE_PERMISSION))
 					{
-						ChatManager.ChannelHandler.removeChannel(Event.getChannel()); //Call the channel-handler to remove the channel
-						Event.getDeleter().sendMessage(ChatColor.GREEN + "Channel Deleted"); //Tell the sender that the channel was deleted
+						ChatManager.channelHandler.removeChannel(channelToDelete); //Call the channel-handler to remove the channel
+						event.getDeleter().sendMessage(StringUtil.formatColorCodes("&aChannel Deleted")); //Tell the sender that the channel was deleted
 					}
 					else
 					{
-						Event.getDeleter().sendMessage(ChatColor.RED + "You don't have permission to delete others channels.");
+						event.getDeleter().sendMessage(StringUtil.formatColorCodes("&cYou don't have permission to delete others channels."));
 					}
 				}
 			}
 			else
 			{
-				if (Channel.getName().equalsIgnoreCase(ChatManager.GLOBAL_CHAT_CHANNEL))
+				if (chatChannel.getName().equalsIgnoreCase(ChatManager.GLOBAL_CHAT_CHANNEL))
 				{
-					Event.getDeleter().sendMessage(ChatColor.RED + "The global chat can't be deleted");
+					channelDeleter.sendMessage(StringUtil.formatColorCodes("&cThe global chat can't be deleted"));
 				}
 				else
 				{
-					Event.getDeleter().sendMessage(ChatColor.RED + "Permanant channels can't be deleted");
+					channelDeleter.sendMessage(StringUtil.formatColorCodes("&aPermanant channels can't be deleted"));
 				}
 			}
 		}
 	}
 	
-	public static void HandleChannelLeaveEvent(ChannelLeaveEvent Event)
+	public static void handleChannelLeaveEvent(ChannelLeaveEvent event)
 	{
-		Bukkit.getServer().getPluginManager().callEvent(Event);
-		if (!Event.isCancelled())
+		String playerName = event.getPlayer();
+		ChatChannel chatChannel = event.getChatChannel();
+		String channelName = chatChannel.getName();
+
+		Bukkit.getServer().getPluginManager().callEvent(event);
+		if (!event.isCancelled())
 		{
-			Event.getChannel().removeMember(Event.getPlayer());
-			if (!Event.getChannel().isPermanant())
+			chatChannel.removeMember(playerName);
+			if (!chatChannel.isPermanent())
 			{
-				if (Event.getChannel().getMembers().size() <= 0)
+				if (chatChannel.getChatMembers().size() <= 0)
 				{
-					ChannelDeleteEvent DeleteEvent = new ChannelDeleteEvent(Event.getChannel(),null);
-					HandleChannelDeleteEvent(DeleteEvent);
+					ChannelDeleteEvent deleteEvent = new ChannelDeleteEvent(chatChannel,null);
+					handleChannelDeleteEvent(deleteEvent);
 				}
 			}
-			if (!Event.getChannel().getName().equalsIgnoreCase(ChatManager.GLOBAL_CHAT_CHANNEL))
+			if (channelName.equalsIgnoreCase(ChatManager.GLOBAL_CHAT_CHANNEL))
 			{
-				if (PlayerHandler.isOnline(Event.getPlayer()))
+				if (PlayerHandler.isOnline(playerName))
 				{
-					ChatChannel Channel = ChatManager.ChannelHandler.getChannel(ChatManager.GLOBAL_CHAT_CHANNEL);
-					ChatManager.ChannelHandler.addPlayerToChannel(Event.getPlayer(), Channel);
-					PlayerHandler.getData(Event.getPlayer()).setChatChannel(ChatManager.GLOBAL_CHAT_CHANNEL);
-					if (Channel.allowJoinLeaveMessages())
+					ChatChannel globalChatChannel = ChatManager.channelHandler.getChannel(ChatManager.GLOBAL_CHAT_CHANNEL);
+					ChatManager.channelHandler.addPlayerToChannel(playerName, globalChatChannel);
+					PlayerHandler.getData(playerName).setChatChannel(ChatManager.GLOBAL_CHAT_CHANNEL);
+					if (globalChatChannel.allowJoinLeaveMessages())
 					{
-						Channel.sendToMembers(ChatColor.GRAY + Event.getPlayer() + " has joined the Channel!");
+						globalChatChannel.sendToMembers(StringUtil.formatColorCodes(String.format("&7{0} has joined the Channel!", playerName)));
 					}
 				}
 			}
-			if (Event.getChannel().allowJoinLeaveMessages()) //Check for allowing of Join-Leave messages
+			if (chatChannel.allowJoinLeaveMessages()) //Check for allowing of Join-Leave messages
 			{
-				Event.getChannel().sendToMembers(ChatColor.GRAY + Event.getPlayer() + " has left the chat."); //Notify all users that user has left
+				chatChannel.sendToMembers(StringUtil.formatColorCodes(String.format("&7{0} has left the chat.",playerName))); //Notify all users that user has left
 			}
 		}
 	}
 	
-	public static void HandleChannelCreateEvent(ChannelCreateEvent Event)
+	public static void handleChannelCreateEvent(ChannelCreateEvent event)
 	{
-		Bukkit.getServer().getPluginManager().callEvent(Event);
-		if (!Event.isCancelled())
+		Bukkit.getServer().getPluginManager().callEvent(event);
+
+		ChatChannel chatChannel = event.getChatChannel();
+
+		CommandSender channelCreator = event.getCreator();
+
+		if (!event.isCancelled())
 		{
-			if (!ChatManager.ChannelHandler.isChannel(Event.getChannel()))
+			if (!ChatManager.channelHandler.isChannel(chatChannel))
 			{
-				ChatManager.ChannelHandler.addChannel(Event.getChannel()); //Create the channel
-				Event.getCreator().sendMessage(ChatColor.GREEN + "Channel '" + Event.getChannel().getName() + "' has been created."); //Send message saying it was created
+				ChatManager.channelHandler.addChannel(chatChannel); //Create the channel
+				channelCreator.sendMessage(StringUtil.formatColorCodes(String.format("&cChannel '{0}' has been created.", chatChannel.getName()))); //Send message saying it was created
 			}
 			else
 			{
-				Event.getCreator().sendMessage(ChatColor.RED + "Channel '" + Event.getChannel().getName() + "' already exists.");
+				channelCreator.sendMessage(StringUtil.formatColorCodes(String.format("&cChannel '{0}' already exists.",chatChannel.getName())));
 			}
 		}
 	}
 	
-	public static void HandleChannelJoinEvent(ChannelJoinEvent Event)
+	public static void handleChannelJoinEvent(ChannelJoinEvent event)
 	{
-		Bukkit.getServer().getPluginManager().callEvent(Event);
-		if (!Event.isCancelled())
+		Bukkit.getServer().getPluginManager().callEvent(event);
+		if (!event.isCancelled())
 		{
-			ChatChannel Channel = Event.getChannel();
-			if (Channel.hasPermission())
+			ChatChannel chatChannel = event.getChatChannel();
+			String chatChannelCreator = chatChannel.getCreator();
+
+			Player player = event.getPlayer();
+			String playerName = player.getName();
+			String playerDisplayName = player.getDisplayName();
+
+			if (chatChannel.hasPermission())
 			{
-				if (!Event.getPlayer().hasPermission(Channel.getPermission()))
+				if (!event.getPlayer().hasPermission(chatChannel.getChannelPermission()))
 				{
+					player.sendMessage(StringUtil.formatColorCodes(String.format("&cNon-sufficient permissions to join the channel; You must have &e{0} to join.",chatChannel.getChannelPermission())));
 					return;
 				}
 			}
 			
-			if (Channel.isPrivate() && !Channel.getCreator().equalsIgnoreCase(Event.getPlayer().getName()))
+			if (chatChannel.isPrivate() && !chatChannelCreator.equalsIgnoreCase(playerName))
 			{
-				if (ChatManager.ChannelHandler.hasChannelInvitation(Event.getPlayer().getName()))
+				if (ChatManager.channelHandler.hasChannelInvitation(playerName))
 				{
-					if (ChatManager.ChannelHandler.acceptChannelInvitation(Event.getPlayer().getName()))
+					if (ChatManager.channelHandler.acceptChannelInvitation(playerName))
 					{
-						if (Channel.allowJoinLeaveMessages())
+						if (chatChannel.allowJoinLeaveMessages())
 						{
-							Channel.sendToMembers(ChatColor.GRAY + Event.getPlayer().getName() + " has joined the Channel!");
+							chatChannel.sendToMembers(StringUtil.formatColorCodes(String.format("&7{0} has joined the Channel!", playerDisplayName)));
 						}
 					}
 					else
 					{
-						Event.getPlayer().sendMessage(ChatColor.YELLOW + "Failed to join the channel.");
+						player.sendMessage(StringUtil.formatColorCodes("&eFailed to join the channel."));
 					}
 				}
 				else
 				{
-					Event.getPlayer().sendMessage(ChatColor.YELLOW + "You don't have an invitation to hoin this chat.");
+					player.sendMessage(StringUtil.formatColorCodes("&eYou don't have an invitation to join this chat."));
 				}
 			}
 			else
 			{
-				ChatChannel CurrentChannel = ChatManager.ChannelHandler.getChannel(PlayerHandler.getData(Event.getPlayer().getName()).getChatChannel());
-				ChannelLeaveEvent lEvent = new ChannelLeaveEvent(CurrentChannel,Event.getPlayer());
-				ChannelEventHandler.HandleChannelLeaveEvent(lEvent);
+				String playerCurrentChannelName = PlayerHandler.getData(playerName).getChatChannel(); //Get the players cPlayer instance
+
+				ChatChannel currentPlayerChannel = ChatManager.channelHandler.getChannel(playerCurrentChannelName); //Get the players current chat channel
+
+				ChannelLeaveEvent channelLeaveEvent = new ChannelLeaveEvent(currentPlayerChannel,player);
+				ChannelEventHandler.handleChannelLeaveEvent(channelLeaveEvent);
 				
-				ChatManager.ChannelHandler.addPlayerToChannel(Event.getPlayer(), Channel);
-				if (Channel.allowJoinLeaveMessages())
+				ChatManager.channelHandler.addPlayerToChannel(player, chatChannel);
+
+				if (chatChannel.allowJoinLeaveMessages())
 				{
-					Channel.sendToMembers(ChatColor.GRAY + Event.getPlayer().getName() + " has joined the Channel!");
+					chatChannel.sendToMembers(StringUtil.formatColorCodes(String.format("&7{0} has joined the Channel!",playerName)));
 				}
-				PlayerHandler.getData(Event.getPlayer().getName()).setChatChannel(Channel.getName());
-				Event.getPlayer().sendMessage("You chat channel is now: " + Channel.getName());
+				PlayerHandler.getData(playerName).setChatChannel(chatChannel.getName());
+				player.sendMessage("&7You're now chatting in: &o" + chatChannel.getName());
 			}
 		}
 	}

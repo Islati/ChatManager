@@ -4,8 +4,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerEvent;
 
 import ChatManager.Handlers.Chat.Channels.ChatChannel;
 
@@ -15,44 +13,44 @@ import ChatManager.Handlers.Chat.Channels.ChatChannel;
 public class ChannelChatEvent extends Event implements Cancellable
 {
 	private static final HandlerList handlers = new HandlerList();
-	private Player Sender;
-	private String Message = "";
-	private ChatChannel Channel;
+	private Player player;
+	private String message = "";
+	private ChatChannel chatChannel;
 	private boolean isCancelled = false;
 
 	/**
 	 * 
-	 * @param Channel
-	 * @param Sender
-	 * @param Message
+	 * @param chatChannel
+	 * @param player
+	 * @param message
 	 */
-	public ChannelChatEvent(ChatChannel Channel, Player Sender, String Message)
+	public ChannelChatEvent(ChatChannel chatChannel, Player player, String message)
 	{
 		super(true);
-		this.Sender = Sender;
-		this.Channel = Channel;
-		this.Sender = Sender;
-		this.Message = Message;
+		this.player = player;
+		this.chatChannel = chatChannel;
+		this.player = player;
+		this.message = message;
 	}
 
 	public Player getPlayer()
 	{
-		return this.Sender;
+		return this.player;
 	}
 
-	public ChatChannel getChannel()
+	public ChatChannel getChatChannel()
 	{
-		return this.Channel;
+		return this.chatChannel;
 	}
 
 	public String getMessage()
 	{
-		return this.Message;
+		return this.message;
 	}
 
 	public void setMessage(String Message)
 	{
-		this.Message = Message;
+		this.message = Message;
 	}
 
 	@Override

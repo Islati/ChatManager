@@ -1,7 +1,7 @@
 package ChatManager.Handlers.Chat.Formatting.Variables;
 public interface IChatVariable
 {
-    public String getVariable();
-    public String getReplaces();
+    public String getChatVariable();
+    public String getVariableReplace();
     public boolean isReplaceable();
 }
