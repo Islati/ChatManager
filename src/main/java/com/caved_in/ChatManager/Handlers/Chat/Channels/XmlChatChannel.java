@@ -2,25 +2,26 @@ package com.caved_in.chatmanager.handlers.chat.channels;
 
 import com.caved_in.chatmanager.commands.CommandMessage;
 import com.caved_in.chatmanager.commands.CommandPermissions;
+import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 
 import java.util.List;
 
 public class XmlChatChannel implements IChatChannel
 {
-	@Element(name = "channelName")
+	@Attribute(name = "channelName")
 	private String channelName = "Example";
 
 	@Element(name = "channelPrefix")
 	private String channelPrefix = "";
 
-	@Element(name = "join_leave_messages")
+	@Attribute(name = "join_leave_messages")
 	private boolean hasJoinLeaveMessages = true;
 
 	@Element(name = "permission_required")
 	private String channelPermission = "chatmanager.channel.join";
 
-	@Element(name = "channel_creator")
+	@Attribute(name = "channel_creator")
 	private String channelCreator = "Console";
 
 	@Element(name = "chat_format")
@@ -28,11 +29,7 @@ public class XmlChatChannel implements IChatChannel
 
 	private boolean isPermanent = true;
 
-	public XmlChatChannel(@Element(name = "channelName")String channelName,
-						  @Element(name = "channelPrefix")String channelPrefix,
-						  @Element(name = "join_leave_messages")boolean hasJoinLeaveMessages,
-						  @Element(name = "permission_required")String channelPermission,
-						  @Element(name = "channel_creator")String channelCreator)
+	public XmlChatChannel(@Attribute(name = "channelName") String channelName, @Element(name = "channelPrefix") String channelPrefix, @Attribute(name = "join_leave_messages") boolean hasJoinLeaveMessages, @Element(name = "permission_required") String channelPermission, @Attribute(name = "channel_creator") String channelCreator)
 	{
 		this.channelName = channelName;
 		this.channelPrefix = channelPrefix;
@@ -50,12 +47,18 @@ public class XmlChatChannel implements IChatChannel
 		this.channelName = chatChannel.getName();
 	}
 
+	public XmlChatChannel()
+	{
+
+	}
+
 	public ChatChannel getChatChannel()
 	{
 		ChatChannel chatChannel = new ChatChannel(this.channelName, this.channelPrefix.equals("") ? "[" + this.channelName + "]" : this.channelPrefix);
 		chatChannel.setChannelPermission(this.channelPermission);
 		chatChannel.setHasJoinLeaveMessages(this.hasJoinLeaveMessages);
 		chatChannel.setCreator(this.channelCreator);
+		chatChannel.setChatFormat(this.channelChatFormat);
 		return chatChannel;
 	}
 

@@ -1,4 +1,3 @@
-
 package com.caved_in.chatmanager.handlers.player;
 
 import org.bukkit.Bukkit;
@@ -9,8 +8,11 @@ import java.util.Map;
 
 public class PlayerHandler
 {
-	private static Map<String, cPlayer> playerData = new HashMap<String,cPlayer>();
-    public PlayerHandler() { }
+	private static Map<String, cPlayer> playerData = new HashMap<String, cPlayer>();
+
+	public PlayerHandler()
+	{
+	}
 
 	public static boolean hasData(String playerName)
 	{
@@ -38,13 +40,13 @@ public class PlayerHandler
 		}
 	}
 
-    public static boolean isOnline(String playerName)
-    {
-        return Bukkit.getOfflinePlayer(playerName).isOnline();
-    }
-    
-    public static Player getPlayer(String playerName)
-    {
-        return Bukkit.getPlayer(playerName);
-    }
+	public static boolean isOnline(String playerName)
+	{
+		return Bukkit.getOfflinePlayer(playerName).isOnline();
+	}
+
+	public static Player getPlayer(String playerName)
+	{
+		return Bukkit.getPlayer(playerName);
+	}
 }

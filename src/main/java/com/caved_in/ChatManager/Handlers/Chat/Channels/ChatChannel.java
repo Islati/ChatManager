@@ -7,21 +7,21 @@ import com.caved_in.chatmanager.handlers.chat.formatting.ChatFormat;
 
 public class ChatChannel implements IChatChannel
 {
-    private String channelName = "";
-    private String channelPrefix = "";
-    private ChatFormat chatFormat = new ChatFormat("Default","%sender% - %message%");
-    private List<String> chatMembers = new ArrayList<String>();
-    
-    private boolean isPrivate = false;
-    
-    private boolean isPermanent = false;
-    
-    private boolean hasPermission = false;
-    private String channelPermission = "";
-    
-    private boolean hasJoinLeaveMessages = true;
-    
-    private String channelCreator = "";
+	private String channelName = "";
+	private String channelPrefix = "";
+	private ChatFormat chatFormat = new ChatFormat("Default", "%sender% - %message%");
+	private List<String> chatMembers = new ArrayList<String>();
+
+	private boolean isPrivate = false;
+
+	private boolean isPermanent = false;
+
+	private boolean hasPermission = false;
+	private String channelPermission = "";
+
+	private boolean hasJoinLeaveMessages = true;
+
+	private String channelCreator = "";
 
 
 	public ChatChannel(String channelName)
@@ -29,8 +29,8 @@ public class ChatChannel implements IChatChannel
 		this.channelName = channelName;
 		this.channelPrefix = "[" + channelName + "]";
 	}
+
 	/**
-	 *
 	 * @param channelName
 	 * @param channelPrefix
 	 */
@@ -41,7 +41,6 @@ public class ChatChannel implements IChatChannel
 	}
 
 	/**
-	 *
 	 * @param channelName
 	 * @param channelPrefix
 	 * @param ChannelCreator
@@ -56,56 +55,52 @@ public class ChatChannel implements IChatChannel
 	}
 
 	/**
-	 *
 	 * @param channelName
 	 * @param channelPrefix
 	 * @param ChatFormat
 	 */
-    public ChatChannel(String channelName, String channelPrefix, ChatFormat ChatFormat)
-    {
-        this.channelName = channelName;
-	    this.channelPrefix = channelPrefix;
-	    this.chatFormat = ChatFormat;
-    }
+	public ChatChannel(String channelName, String channelPrefix, ChatFormat ChatFormat)
+	{
+		this.channelName = channelName;
+		this.channelPrefix = channelPrefix;
+		this.chatFormat = ChatFormat;
+	}
 
 	/**
-	 *
 	 * @param channelName
 	 * @param channelPrefix
 	 * @param ChatFormat
 	 * @param ChannelCreator
 	 * @param isPrivate
 	 */
-    public ChatChannel(String channelName, String channelPrefix, ChatFormat ChatFormat, String ChannelCreator, boolean isPrivate)
-    {
-        this.channelName = channelName;
-	    this.channelPrefix = channelPrefix;
-	    this.chatFormat = ChatFormat;
-	    this.isPrivate = isPrivate;
-	    this.channelCreator = ChannelCreator;
-    }
+	public ChatChannel(String channelName, String channelPrefix, ChatFormat ChatFormat, String ChannelCreator, boolean isPrivate)
+	{
+		this.channelName = channelName;
+		this.channelPrefix = channelPrefix;
+		this.chatFormat = ChatFormat;
+		this.isPrivate = isPrivate;
+		this.channelCreator = ChannelCreator;
+	}
 
 	/**
-	 *
 	 * @param channelName
 	 * @param channelPrefix
 	 * @param ChatFormat
 	 * @param channelPermission
 	 */
-    public ChatChannel(String channelName, String channelPrefix, ChatFormat ChatFormat, String channelPermission)
-    {
-        this.channelName = channelName;
-	    this.channelPrefix = channelPrefix;
-	    this.chatFormat = ChatFormat;
-	    if (!channelPermission.isEmpty())
-	    {
-	    	this.hasPermission = true;
-	    	this.channelPermission = channelPermission;
-	    }
-    }
+	public ChatChannel(String channelName, String channelPrefix, ChatFormat ChatFormat, String channelPermission)
+	{
+		this.channelName = channelName;
+		this.channelPrefix = channelPrefix;
+		this.chatFormat = ChatFormat;
+		if (!channelPermission.isEmpty())
+		{
+			this.hasPermission = true;
+			this.channelPermission = channelPermission;
+		}
+	}
 
 	/**
-	 *
 	 * @param channelName
 	 * @param channelPrefix
 	 * @param ChatFormat
@@ -113,31 +108,31 @@ public class ChatChannel implements IChatChannel
 	 * @param isPrivate
 	 * @param channelPermission
 	 */
-    public ChatChannel(String channelName, String channelPrefix, ChatFormat ChatFormat,String ChannelCreator, boolean isPrivate, String channelPermission)
-    {
-        this.channelName = channelName;
-	    this.channelPrefix = channelPrefix;
-	    this.chatFormat = ChatFormat;
-	    this.isPrivate = isPrivate;
-	    this.channelCreator = ChannelCreator;
-	    if (!channelPermission.isEmpty())
-	    {
-	    	this.hasPermission = true;
-	    	this.channelPermission = channelPermission;
-	    }
-    }
+	public ChatChannel(String channelName, String channelPrefix, ChatFormat ChatFormat, String ChannelCreator, boolean isPrivate, String channelPermission)
+	{
+		this.channelName = channelName;
+		this.channelPrefix = channelPrefix;
+		this.chatFormat = ChatFormat;
+		this.isPrivate = isPrivate;
+		this.channelCreator = ChannelCreator;
+		if (!channelPermission.isEmpty())
+		{
+			this.hasPermission = true;
+			this.channelPermission = channelPermission;
+		}
+	}
 
 	@Override
-    public String getName()
-    {
-        return this.channelName;
-    }
-    
-    @Override
-    public String getPrefix()
-    {
-        return this.channelPrefix;
-    }
+	public String getName()
+	{
+		return this.channelName;
+	}
+
+	@Override
+	public String getPrefix()
+	{
+		return this.channelPrefix;
+	}
 
 	@Override
 	public void setName(String Name)
@@ -152,57 +147,57 @@ public class ChatChannel implements IChatChannel
 	}
 
 	@Override
-    public List<String> getChatMembers()
-    {
-        return this.chatMembers;
-    }
-    
-    @Override
-    public void addMember(String Name)
-    {
-        if (!isMember(Name))
-        {
-            this.chatMembers.add(Name);
-        }
-    }
-    
-    @Override
-    public void removeMember(String Name)
-    {
-        if (isMember(Name))
-        {
-            this.chatMembers.remove(Name);
-        }
-    }
-    
-    @Override
-    public boolean isMember(String Name)
-    {
-        return this.chatMembers.contains(Name);
-    }
-    
-    @Override
-    public void sendToMembers(String messageSender, String message)
-    {
-        for(String chatMember : this.getChatMembers())
-        {
-            if (PlayerHandler.isOnline(chatMember))
-            {
-                PlayerHandler.getPlayer(chatMember).sendMessage(this.getPrefix() + this.chatFormat.getFormattedMessage(messageSender, message));
-            }
-        }
-    }
-    
-    public void sendToMembers(String Message)
-    {
-        for(String Member : this.getChatMembers())
-        {
-            if (PlayerHandler.isOnline(Member))
-            {
-                PlayerHandler.getPlayer(Member).sendMessage(this.getPrefix() + Message);
-            }
-        }
-    }
+	public List<String> getChatMembers()
+	{
+		return this.chatMembers;
+	}
+
+	@Override
+	public void addMember(String Name)
+	{
+		if (!isMember(Name))
+		{
+			this.chatMembers.add(Name);
+		}
+	}
+
+	@Override
+	public void removeMember(String Name)
+	{
+		if (isMember(Name))
+		{
+			this.chatMembers.remove(Name);
+		}
+	}
+
+	@Override
+	public boolean isMember(String Name)
+	{
+		return this.chatMembers.contains(Name);
+	}
+
+	@Override
+	public void sendToMembers(String messageSender, String message)
+	{
+		for (String chatMember : this.getChatMembers())
+		{
+			if (PlayerHandler.isOnline(chatMember))
+			{
+				PlayerHandler.getPlayer(chatMember).sendMessage(this.getPrefix() + this.chatFormat.getFormattedMessage(messageSender, message));
+			}
+		}
+	}
+
+	public void sendToMembers(String Message)
+	{
+		for (String Member : this.getChatMembers())
+		{
+			if (PlayerHandler.isOnline(Member))
+			{
+				PlayerHandler.getPlayer(Member).sendMessage(this.getPrefix() + Message);
+			}
+		}
+	}
 
 	@Override
 	public boolean allowJoinLeaveMessages()
@@ -269,5 +264,10 @@ public class ChatChannel implements IChatChannel
 	public void setPermanent(boolean Permanant)
 	{
 		this.isPermanent = Permanant;
+	}
+
+	public void setChatFormat(String chatFormat)
+	{
+		this.chatFormat.setFormat(chatFormat);
 	}
 }

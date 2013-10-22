@@ -19,7 +19,6 @@ public class ChannelChatEvent extends Event implements Cancellable
 	private boolean isCancelled = false;
 
 	/**
-	 * 
 	 * @param chatChannel
 	 * @param player
 	 * @param message

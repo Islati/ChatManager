@@ -20,7 +20,6 @@ public class ChannelCreateEvent extends Event implements Cancellable
 	private boolean isCancelled = false;
 
 	/**
-	 * 
 	 * @param chatChannel
 	 * @param channelCreator
 	 */
@@ -40,12 +39,12 @@ public class ChannelCreateEvent extends Event implements Cancellable
 	{
 		return this.chatChannel;
 	}
-	
+
 	public boolean isSenderPlayer()
 	{
 		return (this.channelCreator instanceof Player);
 	}
-	
+
 	public boolean isSenderConsole()
 	{
 		return (this.channelCreator instanceof ConsoleCommandSender);

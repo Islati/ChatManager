@@ -18,7 +18,6 @@ public class ChannelLeaveEvent extends Event implements Cancellable
 	private boolean isCancelled = false;
 
 	/**
-	 * 
 	 * @param chatChannel
 	 * @param player
 	 */
@@ -28,7 +27,7 @@ public class ChannelLeaveEvent extends Event implements Cancellable
 		this.Player = player.getName();
 		this.chatChannel = chatChannel;
 	}
-	
+
 	public ChannelLeaveEvent(ChatChannel chatChannel, String playerName)
 	{
 		this.chatChannel = chatChannel;

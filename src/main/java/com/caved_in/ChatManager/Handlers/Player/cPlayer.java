@@ -10,13 +10,13 @@ public class cPlayer
 {
 	private String playerName = "";
 	private String chatChannel = "GLOBAL";
+
 	public cPlayer(String playerName)
 	{
 		this.playerName = playerName;
 	}
 
 	/**
-	 *
 	 * @param player
 	 */
 	public cPlayer(Player player)
@@ -35,7 +35,6 @@ public class cPlayer
 	}
 
 	/**
-	 *
 	 * @param chatChannel
 	 */
 	public void setChatChannel(String chatChannel)

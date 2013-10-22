@@ -1,4 +1,4 @@
-package com.caved_in.chatmanager.events.Handler;
+package com.caved_in.chatmanager.events.handler;
 
 import com.caved_in.chatmanager.commands.CommandPermissions;
 import com.caved_in.chatmanager.handlers.util.StringUtil;
@@ -18,7 +18,6 @@ import org.bukkit.entity.Player;
 public class ChannelEventHandler
 {
 	/**
-	 *
 	 * @param channelChatEvent
 	 */
 	public static void handleChannelChatEvent(ChannelChatEvent channelChatEvent)
@@ -26,12 +25,11 @@ public class ChannelEventHandler
 		Bukkit.getServer().getPluginManager().callEvent(channelChatEvent);
 		if (!channelChatEvent.isCancelled())
 		{
-			channelChatEvent.getChatChannel().sendToMembers(channelChatEvent.getPlayer().getName(),channelChatEvent.getMessage()); //Send the message to all users in the chat
+			channelChatEvent.getChatChannel().sendToMembers(channelChatEvent.getPlayer().getName(), channelChatEvent.getMessage()); //Send the message to all users in the chat
 		}
 	}
 
 	/**
-	 *
 	 * @param event
 	 */
 	public static void handleChannelDeleteEvent(ChannelDeleteEvent event)
@@ -78,7 +76,7 @@ public class ChannelEventHandler
 			}
 		}
 	}
-	
+
 	public static void handleChannelLeaveEvent(ChannelLeaveEvent event)
 	{
 		String playerName = event.getPlayer();
@@ -93,7 +91,7 @@ public class ChannelEventHandler
 			{
 				if (chatChannel.getChatMembers().size() <= 0)
 				{
-					ChannelDeleteEvent deleteEvent = new ChannelDeleteEvent(chatChannel,null);
+					ChannelDeleteEvent deleteEvent = new ChannelDeleteEvent(chatChannel, null);
 					handleChannelDeleteEvent(deleteEvent);
 				}
 			}
@@ -112,11 +110,11 @@ public class ChannelEventHandler
 			}
 			if (chatChannel.allowJoinLeaveMessages()) //Check for allowing of Join-Leave messages
 			{
-				chatChannel.sendToMembers(StringUtil.formatColorCodes(String.format("&7%s has left the chat.",playerName))); //Notify all users that user has left
+				chatChannel.sendToMembers(StringUtil.formatColorCodes(String.format("&7%s has left the chat.", playerName))); //Notify all users that user has left
 			}
 		}
 	}
-	
+
 	public static void handleChannelCreateEvent(ChannelCreateEvent event)
 	{
 		Bukkit.getServer().getPluginManager().callEvent(event);
@@ -134,11 +132,11 @@ public class ChannelEventHandler
 			}
 			else
 			{
-				channelCreator.sendMessage(StringUtil.formatColorCodes(String.format("&cChannel '%s' already exists.",chatChannel.getName())));
+				channelCreator.sendMessage(StringUtil.formatColorCodes(String.format("&cChannel '%s' already exists.", chatChannel.getName())));
 			}
 		}
 	}
-	
+
 	public static void handleChannelJoinEvent(ChannelJoinEvent event)
 	{
 		Bukkit.getServer().getPluginManager().callEvent(event);
@@ -155,11 +153,11 @@ public class ChannelEventHandler
 			{
 				if (!event.getPlayer().hasPermission(chatChannel.getChannelPermission()))
 				{
-					player.sendMessage(StringUtil.formatColorCodes(String.format("&cNon-sufficient permissions to join the channel; You must have &e%s&c to join.",chatChannel.getChannelPermission())));
+					player.sendMessage(StringUtil.formatColorCodes(String.format("&cNon-sufficient permissions to join the channel; You must have &e%s&c to join.", chatChannel.getChannelPermission())));
 					return;
 				}
 			}
-			
+
 			if (chatChannel.isPrivate() && !chatChannelCreator.equalsIgnoreCase(playerName))
 			{
 				if (ChatManager.channelHandler.hasChannelInvitation(playerName))
@@ -187,14 +185,14 @@ public class ChannelEventHandler
 
 				ChatChannel currentPlayerChannel = ChatManager.channelHandler.getChannel(playerCurrentChannelName); //Get the players current chat channel
 
-				ChannelLeaveEvent channelLeaveEvent = new ChannelLeaveEvent(currentPlayerChannel,player);
+				ChannelLeaveEvent channelLeaveEvent = new ChannelLeaveEvent(currentPlayerChannel, player);
 				ChannelEventHandler.handleChannelLeaveEvent(channelLeaveEvent);
-				
+
 				ChatManager.channelHandler.addPlayerToChannel(player, chatChannel);
 
 				if (chatChannel.allowJoinLeaveMessages())
 				{
-					chatChannel.sendToMembers(StringUtil.formatColorCodes(String.format("&7%s has joined the Channel!",playerName)));
+					chatChannel.sendToMembers(StringUtil.formatColorCodes(String.format("&7%s has joined the Channel!", playerName)));
 				}
 				PlayerHandler.getData(playerName).setChatChannel(chatChannel.getName());
 				player.sendMessage(StringUtil.formatColorCodes("&7You're now chatting in: &o" + chatChannel.getName()));

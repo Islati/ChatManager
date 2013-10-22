@@ -9,7 +9,7 @@ public class ChatManagerListener implements Listener
 {
 	public ChatManagerListener(JavaPlugin Plugin)
 	{
-		Plugin.getServer().getPluginManager().registerEvents(this,Plugin);
+		Plugin.getServer().getPluginManager().registerEvents(this, Plugin);
 	}
 
 	//@EventHandler /*Disabled; It was for debugging, will still be used while testing */

@@ -22,7 +22,6 @@ public class ChannelDeleteEvent extends Event implements Cancellable
 	private ChannelDeleteReason deleteReason;
 
 	/**
-	 * 
 	 * @param chatChannel
 	 * @param channelDeleter
 	 */
@@ -55,7 +54,7 @@ public class ChannelDeleteEvent extends Event implements Cancellable
 			}
 		}
 	}
-	
+
 	public enum ChannelDeleteReason
 	{
 		EMPTY,
@@ -68,12 +67,12 @@ public class ChannelDeleteEvent extends Event implements Cancellable
 	{
 		return this.channelDeleter;
 	}
-	
+
 	public boolean isSenderPlayer()
 	{
 		return (this.channelDeleter instanceof Player);
 	}
-	
+
 	public boolean isSenderConsole()
 	{
 		return (this.channelDeleter instanceof ConsoleCommandSender);
@@ -83,7 +82,7 @@ public class ChannelDeleteEvent extends Event implements Cancellable
 	{
 		return this.chatChannel;
 	}
-	
+
 	public ChannelDeleteReason getDeleteReason()
 	{
 		return this.deleteReason;
