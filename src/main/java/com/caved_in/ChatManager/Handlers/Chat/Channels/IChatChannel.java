@@ -2,7 +2,7 @@ package com.caved_in.chatmanager.handlers.chat.channels;
 
 import java.util.List;
 
-public interface IChatChannel
+public interface 	IChatChannel
 {
 	/**
 	 * Get the name of the chat channel
