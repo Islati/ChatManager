@@ -7,11 +7,12 @@ public enum CommandMessage
 	NonExist("[Vaecon Network] That command does not exist.");
 
 	private final String Message;
+
 	CommandMessage(String Message)
 	{
 		this.Message = Message;
 	}
-	
+
 	public String getMessage()
 	{
 		return Message;

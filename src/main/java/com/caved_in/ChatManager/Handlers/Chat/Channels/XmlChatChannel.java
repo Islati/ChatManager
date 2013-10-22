@@ -4,24 +4,26 @@ import com.caved_in.chatmanager.commands.CommandMessage;
 import com.caved_in.chatmanager.commands.CommandPermissions;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
+import org.simpleframework.xml.Root;
 
 import java.util.List;
 
+@Root(name = "ChatChannel")
 public class XmlChatChannel implements IChatChannel
 {
-	@Attribute(name = "channelName")
+	@Element(name = "channelName")
 	private String channelName = "Example";
 
-	@Element(name = "channelPrefix")
+	@Element(name = "prefix",required = false)
 	private String channelPrefix = "";
 
-	@Attribute(name = "join_leave_messages")
+	@Element(name = "join_leave_messages")
 	private boolean hasJoinLeaveMessages = true;
 
-	@Element(name = "permission_required")
+	@Element(name = "permission")
 	private String channelPermission = "chatmanager.channel.join";
 
-	@Attribute(name = "channel_creator")
+	@Element(name = "creator")
 	private String channelCreator = "Console";
 
 	@Element(name = "chat_format")
@@ -29,7 +31,11 @@ public class XmlChatChannel implements IChatChannel
 
 	private boolean isPermanent = true;
 
-	public XmlChatChannel(@Attribute(name = "channelName") String channelName, @Element(name = "channelPrefix") String channelPrefix, @Attribute(name = "join_leave_messages") boolean hasJoinLeaveMessages, @Element(name = "permission_required") String channelPermission, @Attribute(name = "channel_creator") String channelCreator)
+	public XmlChatChannel(@Element(name = "channelName") String channelName,
+						  @Element(name = "prefix",required = false) String channelPrefix,
+						  @Element(name = "join_leave_messages") boolean hasJoinLeaveMessages,
+						  @Element(name = "permission") String channelPermission,
+						  @Element(name = "creator") String channelCreator)
 	{
 		this.channelName = channelName;
 		this.channelPrefix = channelPrefix;
