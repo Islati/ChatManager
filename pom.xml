@@ -79,9 +79,9 @@
             <id>bukkit-repo</id>
             <url>http://repo.bukkit.org/content/groups/public/</url>
         </repository>
-        </repositories>
+    </repositories>
 
-        <dependencies>
+    <dependencies>
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
@@ -106,5 +106,5 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    
+
 </project>
