@@ -8,6 +8,7 @@ import com.caved_in.chatmanager.events.ChannelLeaveEvent;
 import com.caved_in.chatmanager.handlers.player.PlayerHandler;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.caved_in.chatmanager.ChatManager;
@@ -26,16 +27,16 @@ public class ChannelCommands
 	}
 
 	@CommandHandler(name = "channel", usage = "/channel", permission = "chatmanager.channel")
-	public void channelBaseCommand(Player Player, String[] Args)
+	public void channelBaseCommand(CommandSender commandSender, String[] Args)
 	{
 		if (Args.length == 0)
 		{
-			Player.sendMessage(ChatColor.GOLD + "Please use the command '/channel help' for help.");
+			commandSender.sendMessage(ChatColor.GOLD + "Please use the command '/channel help' for help.");
 		}
 	}
 
 	@SubCommandHandler(name = "help", parent = "channel")
-	public void channelHelpCommand(Player Player, String[] Args)
+	public void channelHelpCommand(CommandSender commandSender, String[] commandArgs)
 	{
 		HelpScreen Screen = new HelpScreen("Channel-Command Help");
 		Screen.setHeader(ChatColor.AQUA + "<name> (Page <page> of <maxpage>)");
@@ -51,22 +52,22 @@ public class ChannelCommands
 
 		Screen.setFormat("<name> - <desc>");
 
-		if (Args.length == 1)
+		if (commandArgs.length == 1)
 		{
-			Screen.sendTo(Player, 1, 7);
+			Screen.sendTo(commandSender, 1, 7);
 		}
 		else
 		{
-			if (Args[1] != null && StringUtils.isNumeric(Args[1]))
+			if (commandArgs[1] != null && StringUtils.isNumeric(commandArgs[1]))
 			{
-				int Page = Integer.parseInt(Args[1]);
-				Screen.sendTo(Player, Page, 7);
+				int Page = Integer.parseInt(commandArgs[1]);
+				Screen.sendTo(commandSender, Page, 7);
 			}
 		}
 	}
 
 	@SubCommandHandler(name = "list", parent = "channel", permission = "chatmanager.channel.list")
-	public void channelListCommand(Player player, String[] commandArgs)
+	public void channelListCommand(CommandSender commandSender, String[] commandArgs)
 	{
 		HelpScreen channelList = new HelpScreen("Channels List");
 		channelList.setHeader(StringUtil.formatColorCodes("&b<name> (Page <page> of <maxpage>)"));
@@ -80,14 +81,14 @@ public class ChannelCommands
 
 		if (commandArgs.length == 2)
 		{
-			channelList.sendTo(player, 1, 7);
+			channelList.sendTo(commandSender, 1, 7);
 		}
 		else
 		{
 			if (commandArgs[1] != null && StringUtils.isNumeric(commandArgs[1]))
 			{
 				int pageNumber = Integer.parseInt(commandArgs[1]);
-				channelList.sendTo(player, pageNumber, 7);
+				channelList.sendTo(commandSender, pageNumber, 7);
 			}
 		}
 
