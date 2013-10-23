@@ -19,7 +19,7 @@ public class XmlChatChannel implements IChatChannel
 	private boolean hasJoinLeaveMessages = true;
 
 	@Element(name = "permission")
-	private String channelPermission = "chatmanager.channel.join";
+	private String channelPermission = CommandPermissions.CHANNEL_JOIN_PERMISSION;
 
 	@Element(name = "creator")
 	private String channelCreator = "Console";
