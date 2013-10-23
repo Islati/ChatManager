@@ -1,8 +1,6 @@
 package com.caved_in.chatmanager.handlers.chat.channels;
 
-import com.caved_in.chatmanager.commands.CommandMessage;
 import com.caved_in.chatmanager.commands.CommandPermissions;
-import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 

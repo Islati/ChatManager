@@ -7,6 +7,7 @@ import com.caved_in.chatmanager.handlers.chat.channels.ChatChannel;
 import com.caved_in.chatmanager.handlers.player.PlayerHandler;
 import com.caved_in.chatmanager.commands.CommandRegister;
 import com.caved_in.chatmanager.handlers.chat.ChannelHandler;
+import com.caved_in.chatmanager.handlers.util.StringUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -28,11 +29,15 @@ public class ChatManager extends JavaPlugin
 	public static RunnableManager runnableManager;
 	public static Configuration channelConfig;
 
+	private static String multichatFolder = "plugins/MultiChat";
+
 	@Override
 	public void onEnable()
 	{
-		//Load the configuration
-		loadConfig();
+		//Verify the configuration folder + file exists, if not then create them.
+		configVerify();
+		//Load the xml configuration
+		loadXmlConfig();
 		//Instance variables, commands, listeners, and handlers
 		runnableManager = new RunnableManager(this);
 		new BukkitListener(this);
@@ -68,41 +73,71 @@ public class ChatManager extends JavaPlugin
 		Bukkit.getServer().getScheduler().cancelTasks(this);
 	}
 
-	public void loadConfig()
+	private static boolean configVerify()
 	{
 		try
 		{
-			Serializer serializer = new Persister();
-			File configFolder = new File("plugins/MultiChat");
+			File configFolder = new File(multichatFolder);
+			File configFile = new File(multichatFolder + "/Config.xml");
+			//Config folder doesn't exist
 			if (!configFolder.exists())
 			{
-				//Make plugin directory if it doesn't already exist
+				//Make default config folder
 				configFolder.mkdir();
 			}
 
-			File configLocation = new File("plugins/MultiChat/Config.xml");
-			if (!configLocation.exists())
+			if (!configFile.exists())
 			{
-				//Create channel config if it doesn't already exist
-				configLocation.createNewFile();
-				serializer.write(new Configuration(), configLocation);
-				Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "Default MultiChat configuration has been created.");
-				Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "Default MultiChat configuration has been created.");
+				//Save default config
+				configFile.createNewFile();
+				Serializer serializer = new Persister();
+				serializer.write(new Configuration(),configFile);
+				Bukkit.getConsoleSender().sendMessage(StringUtil.formatColorCodes("&bDefault MultiChat configuration has been created at &eplugins/MultiChat/Config.xml"));
 			}
+			return true;
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+			return false;
+		}
+	}
 
-			//Load the channel configuration
-			channelConfig = serializer.read(Configuration.class,configLocation);
-
+	public static boolean loadXmlConfig()
+	{
+		try
+		{
+			configVerify();
+			Serializer serializer = new Persister();
+			channelConfig = serializer.read(Configuration.class,new File(multichatFolder + "/Config.xml"));
 			for (ChatChannel chatChannel : channelConfig.getChatChannels())
 			{
 				channelHandler.addChannel(chatChannel);
 			}
-
 			Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Loaded " + channelConfig.getXmlChatChannels().size() + " chat channels");
+			return true;
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public static boolean saveXmlConfig()
+	{
+		try
+		{
+			configVerify();
+			Serializer serializer = new Persister();
+			serializer.write(channelConfig,new File(multichatFolder + "/Config.xml"));
+			Bukkit.getConsoleSender().sendMessage(StringUtil.formatColorCodes("&aConfiguration saved"));
+			return true;
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+			return false;
 		}
 	}
 }

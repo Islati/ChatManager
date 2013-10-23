@@ -26,7 +26,7 @@ public class ChannelCommands
 	{
 	}
 
-	@CommandHandler(name = "channel", usage = "/channel", permission = "chatmanager.channel")
+	@CommandHandler(name = "channel", usage = "/channel", permission = "multichat.channel")
 	public void channelBaseCommand(CommandSender commandSender, String[] Args)
 	{
 		if (Args.length == 0)
@@ -38,35 +38,60 @@ public class ChannelCommands
 	@SubCommandHandler(name = "help", parent = "channel")
 	public void channelHelpCommand(CommandSender commandSender, String[] commandArgs)
 	{
-		HelpScreen Screen = new HelpScreen("Channel-Command Help");
-		Screen.setHeader(ChatColor.AQUA + "<name> (Page <page> of <maxpage>)");
-		Screen.setFlipColor(ChatColor.GREEN, ChatColor.DARK_GREEN);
-		Screen.setEntry("/channel create <Name>", "Make a new channel with the given name");
-		Screen.setEntry("/channel create private <Name>", "Make an Invite-Only channel with the given name");
-		Screen.setEntry("/channel join <Channel Name>", "Used to join a chat channel.");
-		Screen.setEntry("/channel leave", "Used to leave the current channel you're in.");
-		Screen.setEntry("/channel delete <name>", "Used to delete a channel with the given name");
-		Screen.setEntry("/channel invite <name>", "Invite a user to your private channel");
-		Screen.setEntry("/channel accept", "Accept a channel invitation");
-		Screen.setEntry("/channel deny", "Deny a channel invitation");
+		HelpScreen commandScreen = new HelpScreen("Channel Command Help");
+		commandScreen.setHeader(ChatColor.AQUA + "<name> (Page <page> of <maxpage>)");
+		commandScreen.setFlipColor(ChatColor.GREEN, ChatColor.DARK_GREEN);
+		commandScreen.setEntry("/channel create <Name>", "Make a new channel with the given name");
+		commandScreen.setEntry("/channel create private <Name>", "Make an Invite-Only channel with the given name");
+		commandScreen.setEntry("/channel join <Channel Name>", "Used to join a chat channel.");
+		commandScreen.setEntry("/channel leave", "Used to leave the current channel you're in.");
+		commandScreen.setEntry("/channel delete <name>", "Used to delete a channel with the given name");
+		commandScreen.setEntry("/channel invite <name>", "Invite a user to your private channel");
+		commandScreen.setEntry("/channel accept", "Accept a channel invitation");
+		commandScreen.setEntry("/channel deny", "Deny a channel invitation");
+		commandScreen.setEntry("/channel list", "View a list of all the existing channels");
+		commandScreen.setEntry("/channel reload", "Reloads the configuration file for MultiChat");
+		commandScreen.setEntry("/channel save", "Saves MultiChat data to the configuration file");
 
-		Screen.setFormat("<name> - <desc>");
+		commandScreen.setFormat("<name> - <desc>");
 
 		if (commandArgs.length == 1)
 		{
-			Screen.sendTo(commandSender, 1, 7);
+			commandScreen.sendTo(commandSender, 1, 7);
 		}
 		else
 		{
 			if (commandArgs[1] != null && StringUtils.isNumeric(commandArgs[1]))
 			{
 				int Page = Integer.parseInt(commandArgs[1]);
-				Screen.sendTo(commandSender, Page, 7);
+				commandScreen.sendTo(commandSender, Page, 7);
 			}
 		}
 	}
 
-	@SubCommandHandler(name = "list", parent = "channel", permission = "chatmanager.channel.list")
+	@SubCommandHandler(name = "reload", parent = "channel", permission = "multichat.reload")
+	public void channelReloadCommand(CommandSender commandSender, String[] commandArgs)
+	{
+		if (ChatManager.loadXmlConfig())
+		{
+			commandSender.sendMessage(StringUtil.formatColorCodes("&aMultiChat configuration has been reloaded"));
+		}
+		else
+		{
+			commandSender.sendMessage(StringUtil.formatColorCodes("&cThere was an error while reloading the configuration, please check the console for the reason"));
+		}
+	}
+
+	@SubCommandHandler(name = "save", parent = "channel", permission = "multichat.save")
+	public void channelSaveCommand(CommandSender commandSender, String[] commandArgs)
+	{
+		if (ChatManager.saveXmlConfig())
+		{
+			commandSender.sendMessage(StringUtil.formatColorCodes("&aMultiChat configuration has been saved"));
+		}
+	}
+
+	@SubCommandHandler(name = "list", parent = "channel", permission = "multichat.channel.list")
 	public void channelListCommand(CommandSender commandSender, String[] commandArgs)
 	{
 		HelpScreen channelList = new HelpScreen("Channels List");
@@ -76,7 +101,7 @@ public class ChannelCommands
 
 		for(ChatChannel chatChannel : ChatManager.channelHandler.getChannels())
 		{
-			channelList.setEntry(chatChannel.getName(),StringUtil.formatColorCodes(" has &c" + chatChannel.getChatMembers().size() + "&6 members in chat" + (chatChannel.isPrivate() ? ", &einvite only" : "") + (chatChannel.hasPermission() ? "&6, &brequires permission" : "")));
+			channelList.setEntry(chatChannel.getName(),StringUtil.formatColorCodes("has &c" + chatChannel.getChatMembers().size() + "&6 members in chat" + (chatChannel.isPrivate() ? ", &einvite only" : "") + (chatChannel.hasPermission() ? "&6, &brequires permission" : "")));
 		}
 
 		if (commandArgs.length == 1)
@@ -91,10 +116,9 @@ public class ChannelCommands
 				channelList.sendTo(commandSender, pageNumber, 7);
 			}
 		}
-
 	}
 
-	@SubCommandHandler(name = "create", parent = "channel", permission = "chatmanager.channel.create")
+	@SubCommandHandler(name = "create", parent = "channel", permission = "multichat.channel.create")
 //usage = "/addchannel <name>", permission = "vaeconnetwork.chat.message"
 	public void channelCreateCommand(Player player, String[] commandArgs)
 	{
@@ -157,7 +181,7 @@ public class ChannelCommands
 		}
 	}
 
-	@SubCommandHandler(name = "delete", parent = "channel", permission = "chatmanager.channel.delete")
+	@SubCommandHandler(name = "delete", parent = "channel", permission = "multichat.channel.delete")
 	public void deleteChannelCommand(Player player, String[] commandArgs)
 	{
 		if (commandArgs.length > 1 && !commandArgs[1].isEmpty())
@@ -182,7 +206,7 @@ public class ChannelCommands
 		}
 	}
 
-	@SubCommandHandler(name = "join", parent = "channel", permission = "chatmanager.channel.join")
+	@SubCommandHandler(name = "join", parent = "channel", permission = "multichat.channel.join")
 	public void joinChannelEvent(Player player, String[] commandArgs)
 	{
 		if (commandArgs.length > 1 && !commandArgs[1].isEmpty())
@@ -212,14 +236,14 @@ public class ChannelCommands
 		}
 	}
 
-	@SubCommandHandler(name = "leave", parent = "channel", permission = "chatmanager.channel.join")
+	@SubCommandHandler(name = "leave", parent = "channel", permission = "multichat.channel.join")
 	public void leaveChannelCommand(Player player, String[] commandArgs)
 	{
 		ChannelLeaveEvent channelLeaveEvent = new ChannelLeaveEvent(ChatManager.channelHandler.getChannel(PlayerHandler.getData(player.getName()).getChatChannel()), player);
 		ChannelEventHandler.handleChannelLeaveEvent(channelLeaveEvent);
 	}
 
-	@SubCommandHandler(name = "invite", parent = "channel", permission = "chatmanager.channel.invite")
+	@SubCommandHandler(name = "invite", parent = "channel", permission = "multichat.channel.invite")
 	public void InviteChannel(Player player, String[] commandArgs)
 	{
 		String playerName = player.getName();
@@ -261,7 +285,7 @@ public class ChannelCommands
 		}
 	}
 
-	@SubCommandHandler(name = "accept", parent = "channel", permission = "chatmanager.channel.invite")
+	@SubCommandHandler(name = "accept", parent = "channel", permission = "multichat.channel.invite")
 	public void acceptChannelInvitation(Player player, String[] commandArgs)
 	{
 		String playerName = player.getName();
@@ -294,7 +318,7 @@ public class ChannelCommands
 		}
 	}
 
-	@SubCommandHandler(name = "deny", parent = "channel", permission = "chatmanager.channel.invite")
+	@SubCommandHandler(name = "deny", parent = "channel", permission = "multichat.channel.invite")
 	public void denyInvitationCommand(Player player, String[] commandArgs)
 	{
 		String playerName = player.getName();

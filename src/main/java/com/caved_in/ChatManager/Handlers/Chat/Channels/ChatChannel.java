@@ -5,6 +5,7 @@ import java.util.*;
 import com.caved_in.chatmanager.commands.CommandPermissions;
 import com.caved_in.chatmanager.handlers.player.PlayerHandler;
 import com.caved_in.chatmanager.handlers.chat.formatting.ChatFormat;
+import com.caved_in.chatmanager.handlers.util.StringUtil;
 
 public class ChatChannel implements IChatChannel
 {
@@ -184,7 +185,7 @@ public class ChatChannel implements IChatChannel
 		{
 			if (PlayerHandler.isOnline(chatMember))
 			{
-				PlayerHandler.getPlayer(chatMember).sendMessage(this.getPrefix() + this.chatFormat.getFormattedMessage(messageSender, message));
+				PlayerHandler.getPlayer(chatMember).sendMessage(StringUtil.formatColorCodes(this.getPrefix() + this.chatFormat.getFormattedMessage(messageSender, message)));
 			}
 		}
 	}
@@ -195,7 +196,7 @@ public class ChatChannel implements IChatChannel
 		{
 			if (PlayerHandler.isOnline(Member))
 			{
-				PlayerHandler.getPlayer(Member).sendMessage(this.getPrefix() + Message);
+				PlayerHandler.getPlayer(Member).sendMessage(StringUtil.formatColorCodes(this.getPrefix() + Message));
 			}
 		}
 	}
