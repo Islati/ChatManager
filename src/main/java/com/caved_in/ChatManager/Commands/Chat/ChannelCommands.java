@@ -108,7 +108,7 @@ public class ChannelCommands
 					channelName += " ";
 					for(int I = 2; I < commandArgs.length; I++)
 					{
-						channelName += (I == (commandArgs.length - 1) ? commandArgs[I] : commandArgs + " ");
+						channelName += (I == (commandArgs.length - 1)) ? commandArgs[I] : commandArgs + " ";
 					}
 				}
 
@@ -133,7 +133,7 @@ public class ChannelCommands
 						pChannelName += " ";
 						for(int I = 3; I < commandArgs.length; I++)
 						{
-							channelName += (I == (commandArgs.length - 1) ? commandArgs[I] : commandArgs + " ");
+							channelName += (I == (commandArgs.length - 1)) ? commandArgs[I] : commandArgs + " ";
 						}
 					}
 
@@ -167,7 +167,7 @@ public class ChannelCommands
 			//Parse for channel name
 			for(int I = 1; I < commandArgs.length; I++)
 			{
-				channelName += (I == (commandArgs.length - 1) ? commandArgs[I] : commandArgs + " ");
+				channelName += (I == (commandArgs.length - 1)) ? commandArgs[I] : commandArgs + " ";
 			}
 
 			if (ChatManager.channelHandler.isChannel(channelName))
@@ -192,7 +192,8 @@ public class ChannelCommands
 			//Parse for channel name
 			for(int I = 1; I < commandArgs.length; I++)
 			{
-				channelName += (I == (commandArgs.length - 1) ? commandArgs[I] : commandArgs + " ");
+
+				channelName += (I == (commandArgs.length - 1)) ? commandArgs[I] : commandArgs + " ";
 			}
 
 			if (!ChatManager.channelHandler.isChannel(channelName))
