@@ -3,6 +3,7 @@ package com.caved_in.chatmanager;
 import com.caved_in.chatmanager.config.Configuration;
 import com.caved_in.chatmanager.events.ChannelJoinEvent;
 import com.caved_in.chatmanager.events.handler.ChannelEventHandler;
+import com.caved_in.chatmanager.handlers.chat.channels.ChatChannel;
 import com.caved_in.chatmanager.handlers.player.PlayerHandler;
 import com.caved_in.chatmanager.commands.CommandRegister;
 import com.caved_in.chatmanager.handlers.chat.ChannelHandler;
@@ -90,6 +91,12 @@ public class ChatManager extends JavaPlugin
 
 			//Load the channel configuration
 			channelConfig = serializer.read(Configuration.class,configLocation);
+
+			for (ChatChannel chatChannel : channelConfig.getChatChannels())
+			{
+				channelHandler.addChannel(chatChannel);
+			}
+
 			Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Loaded " + channelConfig.getXmlChatChannels().size() + " chat channels");
 		}
 		catch (Exception e)
