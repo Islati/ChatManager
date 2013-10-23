@@ -49,7 +49,14 @@ public class ChannelHandler
 	 */
 	public boolean isChannel(String channelName)
 	{
-		return this.chatChannels.containsKey(channelName);
+		for(String chatChannel : this.chatChannels.keySet())
+		{
+			if (channelName.equalsIgnoreCase(chatChannel))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -95,7 +102,14 @@ public class ChannelHandler
 	 */
 	public ChatChannel getChannel(String channelName)
 	{
-		return this.chatChannels.get(channelName);
+		for(Map.Entry<String, ChatChannel> chatChannel : this.chatChannels.entrySet())
+		{
+			if (channelName.equalsIgnoreCase(chatChannel.getKey()))
+			{
+				return  chatChannel.getValue();
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -219,5 +233,14 @@ public class ChannelHandler
 			}
 		}
 		return false; //Player Has no data
+	}
+
+	/**
+	 * Get a list of the currently active chat channels
+	 * @return
+	 */
+	public List<ChatChannel> getChannels()
+	{
+		return new ArrayList<ChatChannel>(this.chatChannels.values());
 	}
 }

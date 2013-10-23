@@ -65,6 +65,34 @@ public class ChannelCommands
 		}
 	}
 
+	@SubCommandHandler(name = "list", parent = "channel", permission = "chatmanager.channel.list")
+	public void channelListCommand(Player player, String[] commandArgs)
+	{
+		HelpScreen channelList = new HelpScreen("Channels List");
+		channelList.setHeader(StringUtil.formatColorCodes("&b<name> (Page <page> of <maxpage>)"));
+		channelList.setSimpleColor(ChatColor.GOLD);
+		channelList.setFormat("<name> <desc>");
+
+		for(ChatChannel chatChannel : ChatManager.channelHandler.getChannels())
+		{
+			channelList.setEntry(chatChannel.getName(),StringUtil.formatColorCodes(" has &c" + chatChannel.getChatMembers().size() + "&6 members in chat" + (chatChannel.isPrivate() ? ", &einvite only" : "") + (chatChannel.hasPermission() ? "&6, &brequires permission" : "")));
+		}
+
+		if (commandArgs.length == 2)
+		{
+			channelList.sendTo(player, 1, 7);
+		}
+		else
+		{
+			if (commandArgs[1] != null && StringUtils.isNumeric(commandArgs[1]))
+			{
+				int pageNumber = Integer.parseInt(commandArgs[1]);
+				channelList.sendTo(player, pageNumber, 7);
+			}
+		}
+
+	}
+
 	@SubCommandHandler(name = "create", parent = "channel", permission = "chatmanager.channel.create")
 //usage = "/addchannel <name>", permission = "vaeconnetwork.chat.message"
 	public void channelCreateCommand(Player player, String[] commandArgs)
@@ -97,13 +125,13 @@ public class ChannelCommands
 					}
 					else
 					{
-						player.sendMessage(ChatColor.RED + "The channel '" + channelName + "' already exists");
+						player.sendMessage(StringUtil.formatColorCodes("&cThe channel &e" + channelName + "&c already exists"));
 					}
 
 				}
 				else
 				{
-					player.sendMessage(ChatColor.YELLOW + "To create a private channel do '" + ChatColor.GREEN + "/channel create private <Name>" + ChatColor.YELLOW + "'");
+					player.sendMessage(StringUtil.formatColorCodes("&eTo create a private channel do &a/channel create private <Name>&e"));
 				}
 			}
 		}
@@ -114,7 +142,14 @@ public class ChannelCommands
 	{
 		if (commandArgs.length > 1 && !commandArgs[1].isEmpty())
 		{
-			String channelName = commandArgs[1];
+			String channelName = "";
+
+			//Parse for channel name
+			for(int I = 1; I < commandArgs.length; I++)
+			{
+				channelName += (I == (commandArgs.length - 1) ? commandArgs[I] : commandArgs + " ");
+			}
+
 			if (ChatManager.channelHandler.isChannel(channelName))
 			{
 				ChannelDeleteEvent channelDeleteEvent = new ChannelDeleteEvent(ChatManager.channelHandler.getChannel(channelName), player);
@@ -122,7 +157,7 @@ public class ChannelCommands
 			}
 			else
 			{
-				player.sendMessage(ChatColor.RED + "The Chat Channel '" + channelName + "' doesn't exist.");
+				player.sendMessage(StringUtil.formatColorCodes("&cThe Chat Channel &e" + channelName + "&c doesn't exist."));
 			}
 		}
 	}
@@ -130,21 +165,29 @@ public class ChannelCommands
 	@SubCommandHandler(name = "join", parent = "channel", permission = "chatmanager.channel.join")
 	public void joinChannelEvent(Player player, String[] commandArgs)
 	{
-		if (commandArgs.length > 1)
+		if (commandArgs.length > 1 && !commandArgs[1].isEmpty())
 		{
-			if (!commandArgs[1].isEmpty())
+			String channelName = "";
+
+			//Parse for channel name
+			for(int I = 1; I < commandArgs.length; I++)
 			{
-				String channelName = commandArgs[1];
-				if (!ChatManager.channelHandler.isChannel(channelName))
-				{
-					player.sendMessage("Chat channel " + channelName + " doesn't exist");
-				}
-				else
-				{
-					ChannelJoinEvent channelJoinEvent = new ChannelJoinEvent(ChatManager.channelHandler.getChannel(channelName), player);
-					ChannelEventHandler.handleChannelJoinEvent(channelJoinEvent);
-				}
+				channelName += (I == (commandArgs.length - 1) ? commandArgs[I] : commandArgs + " ");
 			}
+
+			if (!ChatManager.channelHandler.isChannel(channelName))
+			{
+				player.sendMessage("Chat channel " + channelName + " doesn't exist");
+			}
+			else
+			{
+				ChannelJoinEvent channelJoinEvent = new ChannelJoinEvent(ChatManager.channelHandler.getChannel(channelName), player);
+				ChannelEventHandler.handleChannelJoinEvent(channelJoinEvent);
+			}
+		}
+		else
+		{
+			player.sendMessage(StringUtil.formatColorCodes("&cPlease include a channel to join"));
 		}
 	}
 
