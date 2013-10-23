@@ -112,7 +112,7 @@ public class CommandController implements CommandExecutor
 
 		String permission() default "";
 
-		String permissionMessage() default "[Vaecon Network] You do not have permission for this command, if you believe this is an error please fill out a bug report on our forums.";
+		String permissionMessage() default "You do not have permission for this command";
 	}
 
 	/**
@@ -137,7 +137,7 @@ public class CommandController implements CommandExecutor
 
 		String permission() default "";
 
-		String permissionMessage() default "[Vaecon Network] You do not have permission for this command, if you believe this is an error please fill out a bug report on our forums.";
+		String permissionMessage() default "You do not have permission for this command";
 	}
 
 	/**
@@ -244,7 +244,7 @@ public class CommandController implements CommandExecutor
 					}
 					catch (Exception e)
 					{
-						sender.sendMessage(ChatColor.RED + "[Vaecon Network] There was an error while processing this command; Please check the syntax used, and if it persists fill out a bug report on our forums.");
+						sender.sendMessage(ChatColor.RED + "There was an error while processing this command");
 						e.printStackTrace();
 					}
 					return true;
@@ -287,7 +287,7 @@ public class CommandController implements CommandExecutor
 			}
 			catch (Exception e)
 			{
-				sender.sendMessage(ChatColor.RED + "[Vaecon Network] There was an error while processing this command; Please check the syntax used, and if it persists fill out a bug report on our forums.");
+				sender.sendMessage(ChatColor.RED + "There was an error while processing this command");
 				e.printStackTrace();
 			}
 		}
