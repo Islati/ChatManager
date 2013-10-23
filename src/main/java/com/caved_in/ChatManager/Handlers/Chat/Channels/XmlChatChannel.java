@@ -65,6 +65,7 @@ public class XmlChatChannel implements IChatChannel
 		chatChannel.setHasJoinLeaveMessages(this.hasJoinLeaveMessages);
 		chatChannel.setCreator(this.channelCreator);
 		chatChannel.setChatFormat(this.channelChatFormat);
+		chatChannel.setPermanent(true);
 		return chatChannel;
 	}
 

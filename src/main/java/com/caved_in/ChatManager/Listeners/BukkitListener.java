@@ -53,7 +53,7 @@ public class BukkitListener implements Listener
 				ChannelJoinEvent channelJoinEvent = new ChannelJoinEvent(ChatManager.channelHandler.getChannel(PlayerHandler.getData(event.getPlayer().getName()).getChatChannel()), event.getPlayer());
 				ChannelEventHandler.handleChannelJoinEvent(channelJoinEvent);
 			}
-		}, 40);
+		}, 10);
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)

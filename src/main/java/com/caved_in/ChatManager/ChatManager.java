@@ -57,7 +57,7 @@ public class ChatManager extends JavaPlugin
 					ChannelJoinEvent channelJoinEvent = new ChannelJoinEvent(ChatManager.channelHandler.getChannel(PlayerHandler.getData(playerName).getChatChannel()), cPlayer);
 					ChannelEventHandler.handleChannelJoinEvent(channelJoinEvent);
 				}
-			}, 40);
+			}, 10);
 		}
 	}
 

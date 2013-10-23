@@ -95,7 +95,7 @@ public class ChannelEventHandler
 					handleChannelDeleteEvent(deleteEvent);
 				}
 			}
-			if (channelName.equalsIgnoreCase(ChatManager.GLOBAL_CHAT_CHANNEL))
+			if (!channelName.equalsIgnoreCase(ChatManager.GLOBAL_CHAT_CHANNEL))
 			{
 				if (PlayerHandler.isOnline(playerName))
 				{
@@ -128,11 +128,11 @@ public class ChannelEventHandler
 			if (!ChatManager.channelHandler.isChannel(chatChannel))
 			{
 				ChatManager.channelHandler.addChannel(chatChannel); //Create the channel
-				channelCreator.sendMessage(StringUtil.formatColorCodes(String.format("&aChannel &e'%s' has been created.", chatChannel.getName()))); //Send message saying it was created
+				channelCreator.sendMessage(StringUtil.formatColorCodes(String.format("&aChannel &e'%s'&a has been created.", chatChannel.getName()))); //Send message saying it was created
 			}
 			else
 			{
-				channelCreator.sendMessage(StringUtil.formatColorCodes(String.format("&cChannel '%s' already exists.", chatChannel.getName())));
+				channelCreator.sendMessage(StringUtil.formatColorCodes(String.format("&cChannel &e'%s'&c already exists.", chatChannel.getName())));
 			}
 		}
 	}

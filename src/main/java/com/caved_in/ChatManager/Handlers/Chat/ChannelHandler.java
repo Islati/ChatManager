@@ -73,13 +73,13 @@ public class ChannelHandler
 	 */
 	public void removeChannel(ChatChannel chatChannel)
 	{
-		chatChannel.sendToMembers(ChatColor.YELLOW + "This channel's been deleted, you were moved to the global chat");
+		//chatChannel.sendToMembers(ChatColor.YELLOW + "This channel's been deleted, you were moved to the global chat");
 		for (String chatMember : chatChannel.getChatMembers())
 		{
 			if (PlayerHandler.hasData(chatMember))
 			{
-				cPlayer Player = PlayerHandler.getData(chatMember);
-				Player.setChatChannel(ChatManager.GLOBAL_CHAT_CHANNEL);
+				PlayerHandler.getData(chatMember).setChatChannel(ChatManager.GLOBAL_CHAT_CHANNEL);
+				PlayerHandler.getPlayer(chatMember).sendMessage(ChatColor.YELLOW + chatChannel.getName() + ChatColor.RED + " has been deleted, you've been placed in the global chat.");
 			}
 		}
 		this.chatChannels.remove(chatChannel.getName());
