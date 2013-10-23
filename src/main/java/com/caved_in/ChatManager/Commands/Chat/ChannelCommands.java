@@ -215,14 +215,14 @@ public class ChannelCommands
 				{
 					if (ChatManager.channelHandler.addChannelInvitation(invitingChannelName, playerName, invitedPlayer))
 					{
-						PlayerHandler.getPlayer(invitedPlayer).sendMessage(StringUtil.formatColorCodes(String.format("&a{0}&e has invited you to join their chat channel.", playerDisplayName)));
+						PlayerHandler.getPlayer(invitedPlayer).sendMessage(StringUtil.formatColorCodes(String.format("&a%s&e has invited you to join their chat channel.", playerDisplayName)));
 						PlayerHandler.getPlayer(invitedPlayer).sendMessage(StringUtil.formatColorCodes("&eTo accept, type &a/channel accept"));
 						PlayerHandler.getPlayer(invitedPlayer).sendMessage(StringUtil.formatColorCodes("&eTo deny type &c/channel deny"));
-						player.sendMessage(StringUtil.formatColorCodes(String.format("&a{0} has been invited to join your channel.", playerDisplayName)));
+						player.sendMessage(StringUtil.formatColorCodes(String.format("&a%s has been invited to join your channel.", playerDisplayName)));
 					}
 					else
 					{
-						player.sendMessage(StringUtil.formatColorCodes(String.format("&cFailed to invite &e{0}&c to your channel.", invitedPlayer)));
+						player.sendMessage(StringUtil.formatColorCodes(String.format("&cFailed to invite &e%s&c to your channel.", invitedPlayer)));
 					}
 				}
 				else
@@ -232,7 +232,7 @@ public class ChannelCommands
 			}
 			else
 			{
-				player.sendMessage(StringUtil.formatColorCodes(String.format("&e{0} &cis offline; &e{0} &cneeds to be online to invite them to your channel", invitedPlayer)));
+				player.sendMessage(StringUtil.formatColorCodes(String.format("&e%s &cis offline; &e%s &cneeds to be online to invite them to your channel", invitedPlayer)));
 			}
 		}
 		else
@@ -255,7 +255,7 @@ public class ChannelCommands
 				if (ChatManager.channelHandler.acceptChannelInvitation(playerName))
 				{
 					player.sendMessage(StringUtil.formatColorCodes("&aYou've joined the chat channel!"));
-					PlayerHandler.getPlayer(channelInviter).sendMessage(StringUtil.formatColorCodes(String.format("&a{0} has accepted your channel invitation!", playerDisplayName)));
+					PlayerHandler.getPlayer(channelInviter).sendMessage(StringUtil.formatColorCodes(String.format("&a%s has accepted your channel invitation!", playerDisplayName)));
 				}
 				else
 				{
@@ -264,7 +264,7 @@ public class ChannelCommands
 			}
 			else
 			{
-				player.sendMessage(StringUtil.formatColorCodes(String.format("&cThis invitation has expired; {0} is offline.", channelInviter)));
+				player.sendMessage(StringUtil.formatColorCodes(String.format("&cThis invitation has expired; %s is offline.", channelInviter)));
 				ChatManager.channelHandler.removeChannelInvitation(playerName);
 			}
 		}
@@ -285,10 +285,10 @@ public class ChannelCommands
 			String channelInviter = channelInvitation.getInvitingPlayer();
 			if (PlayerHandler.isOnline(channelInviter))
 			{
-				PlayerHandler.getPlayer(channelInviter).sendMessage(StringUtil.formatColorCodes(String.format("&e{0}&c has declined your channel invitation.", playerDisplayName)));
+				PlayerHandler.getPlayer(channelInviter).sendMessage(StringUtil.formatColorCodes(String.format("&e%s&c has declined your channel invitation.", playerDisplayName)));
 			}
 			ChatManager.channelHandler.removeChannelInvitation(playerName);
-			player.sendMessage(StringUtil.formatColorCodes(String.format("&eYou've declined the channel invitation from &c{0}", channelInviter)));
+			player.sendMessage(StringUtil.formatColorCodes(String.format("&eYou've declined the channel invitation from &c%s", channelInviter)));
 		}
 		else
 		{
