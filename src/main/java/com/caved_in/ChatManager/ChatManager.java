@@ -108,6 +108,7 @@ public class ChatManager extends JavaPlugin
 		try
 		{
 			configVerify();
+			ChatManager.channelHandler.cleanChannels();
 			Serializer serializer = new Persister();
 			channelConfig = serializer.read(Configuration.class,new File(multichatFolder + "/Config.xml"));
 			for (ChatChannel chatChannel : channelConfig.getChatChannels())

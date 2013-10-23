@@ -26,7 +26,7 @@ public class ChannelHandler
 	 */
 	public ChannelHandler()
 	{
-		ChatChannel globalChat = new ChatChannel("GLOBAL", "");
+		ChatChannel globalChat = new ChatChannel(ChatManager.GLOBAL_CHAT_CHANNEL, "");
 		globalChat.setHasJoinLeaveMessages(false);
 		globalChat.setPermanent(true);
 		this.addChannel(globalChat);
@@ -80,6 +80,24 @@ public class ChannelHandler
 			{
 				PlayerHandler.getData(chatMember).setChatChannel(ChatManager.GLOBAL_CHAT_CHANNEL);
 				PlayerHandler.getPlayer(chatMember).sendMessage(ChatColor.YELLOW + chatChannel.getName() + ChatColor.RED + " has been deleted, you've been placed in the global chat.");
+			}
+		}
+		this.chatChannels.remove(chatChannel.getName());
+	}
+
+	/**
+	 *
+	 * @param chatChannel
+	 * @param isReload
+	 */
+	public void removeChannel(ChatChannel chatChannel, boolean isReload)
+	{
+		for (String chatMember : chatChannel.getChatMembers())
+		{
+			if (PlayerHandler.hasData(chatMember))
+			{
+				PlayerHandler.getData(chatMember).setChatChannel(ChatManager.GLOBAL_CHAT_CHANNEL);
+				PlayerHandler.getPlayer(chatMember).sendMessage(ChatColor.YELLOW + "MultiChat has been reloaded, and to stop any errors from happening you've been placed in the global chat.");
 			}
 		}
 		this.chatChannels.remove(chatChannel.getName());
@@ -242,5 +260,13 @@ public class ChannelHandler
 	public List<ChatChannel> getChannels()
 	{
 		return new ArrayList<ChatChannel>(this.chatChannels.values());
+	}
+
+	public void cleanChannels()
+	{
+		for(ChatChannel chatChannel : this.chatChannels.values())
+		{
+			this.removeChannel(chatChannel,true);
+		}
 	}
 }

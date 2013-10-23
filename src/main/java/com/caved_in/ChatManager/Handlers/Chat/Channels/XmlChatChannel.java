@@ -58,7 +58,7 @@ public class XmlChatChannel implements IChatChannel
 
 	public ChatChannel getChatChannel()
 	{
-		ChatChannel chatChannel = new ChatChannel(this.channelName, this.channelPrefix.equals("") ? "[" + this.channelName + "]" : this.channelPrefix);
+		ChatChannel chatChannel = new ChatChannel(this.channelName, (this.channelPrefix == null || this.channelPrefix.equals("")) ? "[" + this.channelName + "]" : this.channelPrefix);
 		chatChannel.setChannelPermission(this.channelPermission);
 		chatChannel.setHasJoinLeaveMessages(this.hasJoinLeaveMessages);
 		chatChannel.setCreator(this.channelCreator);
