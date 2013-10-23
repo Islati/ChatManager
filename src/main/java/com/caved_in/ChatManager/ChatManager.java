@@ -24,8 +24,8 @@ import java.io.IOException;
 
 public class ChatManager extends JavaPlugin
 {
-	public static ChannelHandler channelHandler = new ChannelHandler();
-	public static final String GLOBAL_CHAT_CHANNEL = "Global";
+	public static ChannelHandler channelHandler;
+	public static String GLOBAL_CHAT_CHANNEL = "Global";
 	public static RunnableManager runnableManager;
 	public static Configuration channelConfig;
 
@@ -34,10 +34,11 @@ public class ChatManager extends JavaPlugin
 	@Override
 	public void onEnable()
 	{
+		channelHandler = new ChannelHandler();
 		//Verify the configuration folder + file exists, if not then create them.
 		configVerify();
 		//Load the xml configuration
-		loadXmlConfig();
+		loadXmlConfig(false);
 		//Instance variables, commands, listeners, and handlers
 		runnableManager = new RunnableManager(this);
 		new BukkitListener(this);
@@ -103,12 +104,15 @@ public class ChatManager extends JavaPlugin
 		}
 	}
 
-	public static boolean loadXmlConfig()
+	public static boolean loadXmlConfig(boolean isReload)
 	{
 		try
 		{
 			configVerify();
-			ChatManager.channelHandler.cleanChannels();
+			if (isReload)
+			{
+				ChatManager.channelHandler.cleanChannels();
+			}
 			Serializer serializer = new Persister();
 			channelConfig = serializer.read(Configuration.class,new File(multichatFolder + "/Config.xml"));
 			for (ChatChannel chatChannel : channelConfig.getChatChannels())

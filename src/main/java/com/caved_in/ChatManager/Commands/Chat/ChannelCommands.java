@@ -73,7 +73,7 @@ public class ChannelCommands
 	@SubCommandHandler(name = "reload", parent = "channel", permission = "multichat.reload")
 	public void channelReloadCommand(CommandSender commandSender, String[] commandArgs)
 	{
-		if (ChatManager.loadXmlConfig())
+		if (ChatManager.loadXmlConfig(true))
 		{
 			commandSender.sendMessage(StringUtil.formatColorCodes("&aMultiChat configuration has been reloaded"));
 		}

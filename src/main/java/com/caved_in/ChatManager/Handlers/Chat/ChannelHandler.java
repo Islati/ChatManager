@@ -266,7 +266,10 @@ public class ChannelHandler
 	{
 		for(ChatChannel chatChannel : this.chatChannels.values())
 		{
-			this.removeChannel(chatChannel,true);
+			if (!chatChannel.getName().equalsIgnoreCase(ChatManager.GLOBAL_CHAT_CHANNEL))
+			{
+				this.removeChannel(chatChannel,true);
+			}
 		}
 	}
 }

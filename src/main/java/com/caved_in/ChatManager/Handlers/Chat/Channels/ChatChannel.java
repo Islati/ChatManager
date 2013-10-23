@@ -19,7 +19,7 @@ public class ChatChannel implements IChatChannel
 	private boolean isPermanent = false;
 
 	private boolean hasPermission = false;
-	private String channelPermission = "chatmanager.channel.join";
+	private String channelPermission = CommandPermissions.CHANNEL_JOIN_PERMISSION;
 
 	private boolean hasJoinLeaveMessages = true;
 
