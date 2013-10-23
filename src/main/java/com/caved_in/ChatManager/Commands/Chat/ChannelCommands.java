@@ -79,7 +79,7 @@ public class ChannelCommands
 			channelList.setEntry(chatChannel.getName(),StringUtil.formatColorCodes(" has &c" + chatChannel.getChatMembers().size() + "&6 members in chat" + (chatChannel.isPrivate() ? ", &einvite only" : "") + (chatChannel.hasPermission() ? "&6, &brequires permission" : "")));
 		}
 
-		if (commandArgs.length == 2)
+		if (commandArgs.length == 1)
 		{
 			channelList.sendTo(commandSender, 1, 7);
 		}
