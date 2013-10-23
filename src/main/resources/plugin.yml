@@ -1,4 +1,4 @@
-name: ChatManager
+name: MultiChat
 main: com.caved_in.chatmanager.ChatManager
 version: 1.0
 description: An intuitive take to chat channels which is light-weight and customizable

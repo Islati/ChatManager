@@ -24,7 +24,7 @@ import java.io.IOException;
 public class ChatManager extends JavaPlugin
 {
 	public static ChannelHandler channelHandler = new ChannelHandler();
-	public static final String GLOBAL_CHAT_CHANNEL = "GLOBAL";
+	public static final String GLOBAL_CHAT_CHANNEL = "Global";
 	public static RunnableManager runnableManager;
 	public static Configuration channelConfig;
 
@@ -73,20 +73,21 @@ public class ChatManager extends JavaPlugin
 		try
 		{
 			Serializer serializer = new Persister();
-			File configFolder = new File("plugins/ChatManager");
+			File configFolder = new File("plugins/MultiChat");
 			if (!configFolder.exists())
 			{
 				//Make plugin directory if it doesn't already exist
 				configFolder.mkdir();
 			}
 
-			File configLocation = new File("plugins/ChatManager/Config.xml");
+			File configLocation = new File("plugins/MultiChat/Config.xml");
 			if (!configLocation.exists())
 			{
 				//Create channel config if it doesn't already exist
 				configLocation.createNewFile();
 				serializer.write(new Configuration(), configLocation);
-				Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "Default ChatManager configuration has been created.");
+				Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "Default MultiChat configuration has been created.");
+				Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "Default MultiChat configuration has been created.");
 			}
 
 			//Load the channel configuration
