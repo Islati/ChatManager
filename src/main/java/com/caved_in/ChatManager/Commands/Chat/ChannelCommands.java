@@ -1,5 +1,6 @@
 package com.caved_in.chatmanager.commands.chat;
 
+import com.caved_in.chatmanager.commands.CommandPermissions;
 import com.caved_in.chatmanager.events.ChannelCreateEvent;
 import com.caved_in.chatmanager.events.ChannelJoinEvent;
 import com.caved_in.chatmanager.handlers.util.StringUtil;
@@ -148,34 +149,40 @@ public class ChannelCommands
 			}
 			else
 			{
-				if (commandArgs.length > 2 && !commandArgs[2].isEmpty())
+				if (player.hasPermission(CommandPermissions.CHANNEL_CREATEPRIVATE_PERMISSION))
 				{
-					String pChannelName = commandArgs[2];
-
-					if (commandArgs.length > 3)
+					if (commandArgs.length > 2 && !commandArgs[2].isEmpty())
 					{
-						pChannelName += " ";
-						for(int I = 3; I < commandArgs.length; I++)
+						String pChannelName = commandArgs[2];
+
+						if (commandArgs.length > 3)
 						{
-							pChannelName += (I == (commandArgs.length - 1)) ? commandArgs[I] : commandArgs[I] + " ";
+							pChannelName += " ";
+							for(int I = 3; I < commandArgs.length; I++)
+							{
+								pChannelName += (I == (commandArgs.length - 1)) ? commandArgs[I] : commandArgs[I] + " ";
+							}
 						}
-					}
 
-					if (!ChatManager.channelHandler.isChannel(pChannelName))
-					{
-						ChatChannel privateChatChannel = new ChatChannel(pChannelName, ChatColor.GRAY + "[" + pChannelName + "]" + ChatColor.RESET, player.getName(), true);
-						ChannelCreateEvent Event = new ChannelCreateEvent(privateChatChannel, player);
-						ChannelEventHandler.handleChannelCreateEvent(Event);
+						if (!ChatManager.channelHandler.isChannel(pChannelName))
+						{
+							ChatChannel privateChatChannel = new ChatChannel(pChannelName, ChatColor.GRAY + "[" + pChannelName + "]" + ChatColor.RESET, player.getName(), true);
+							ChannelCreateEvent Event = new ChannelCreateEvent(privateChatChannel, player);
+							ChannelEventHandler.handleChannelCreateEvent(Event);
+						}
+						else
+						{
+							player.sendMessage(StringUtil.formatColorCodes("&cThe channel &e" + channelName + "&c already exists"));
+						}
 					}
 					else
 					{
-						player.sendMessage(StringUtil.formatColorCodes("&cThe channel &e" + channelName + "&c already exists"));
+						player.sendMessage(StringUtil.formatColorCodes("&eTo create a private channel do &a/channel create private <Name>"));
 					}
-
 				}
 				else
 				{
-					player.sendMessage(StringUtil.formatColorCodes("&eTo create a private channel do &a/channel create private <Name>&e"));
+					player.sendMessage(ChatColor.RED + "You do not have permission for this command");
 				}
 			}
 		}
