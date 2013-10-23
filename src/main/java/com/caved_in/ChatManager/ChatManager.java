@@ -90,6 +90,7 @@ public class ChatManager extends JavaPlugin
 
 			//Load the channel configuration
 			channelConfig = serializer.read(Configuration.class,configLocation);
+			Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Loaded " + channelConfig.getXmlChatChannels().size() + " chat channels");
 		}
 		catch (Exception e)
 		{
