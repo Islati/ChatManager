@@ -103,6 +103,15 @@ public class ChannelCommands
 			String channelName = commandArgs[1];
 			if (!channelName.equalsIgnoreCase("private"))
 			{
+				if (commandArgs.length > 2)
+				{
+					channelName += " ";
+					for(int I = 2; I < commandArgs.length; I++)
+					{
+						channelName += (I == (commandArgs.length - 1) ? commandArgs[I] : commandArgs + " ");
+					}
+				}
+
 				if (!ChatManager.channelHandler.isChannel(channelName))
 				{
 					ChannelCreateEvent channelCreateEvent = new ChannelCreateEvent(new ChatChannel(channelName, "[" + channelName + "]"), player);
@@ -110,7 +119,7 @@ public class ChannelCommands
 				}
 				else
 				{
-					player.sendMessage(ChatColor.RED + "The channel '" + channelName + "' already exists");
+					player.sendMessage(StringUtil.formatColorCodes("&cThe channel &e" + channelName + "&c already exists"));
 				}
 			}
 			else
@@ -118,6 +127,16 @@ public class ChannelCommands
 				if (commandArgs.length > 2 && !commandArgs[2].isEmpty())
 				{
 					String pChannelName = commandArgs[2];
+
+					if (commandArgs.length > 3)
+					{
+						pChannelName += " ";
+						for(int I = 3; I < commandArgs.length; I++)
+						{
+							channelName += (I == (commandArgs.length - 1) ? commandArgs[I] : commandArgs + " ");
+						}
+					}
+
 					if (!ChatManager.channelHandler.isChannel(pChannelName))
 					{
 						ChatChannel privateChatChannel = new ChatChannel(pChannelName, ChatColor.GRAY + "[" + pChannelName + "]" + ChatColor.RESET, player.getName(), true);
