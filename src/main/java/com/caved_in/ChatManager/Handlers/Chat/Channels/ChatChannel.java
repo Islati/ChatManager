@@ -2,6 +2,7 @@ package com.caved_in.chatmanager.handlers.chat.channels;
 
 import java.util.*;
 
+import com.caved_in.chatmanager.commands.CommandPermissions;
 import com.caved_in.chatmanager.handlers.player.PlayerHandler;
 import com.caved_in.chatmanager.handlers.chat.formatting.ChatFormat;
 
@@ -17,7 +18,7 @@ public class ChatChannel implements IChatChannel
 	private boolean isPermanent = false;
 
 	private boolean hasPermission = false;
-	private String channelPermission = "";
+	private String channelPermission = "chatmanager.channel.join";
 
 	private boolean hasJoinLeaveMessages = true;
 
@@ -214,7 +215,7 @@ public class ChatChannel implements IChatChannel
 	@Override
 	public boolean hasPermission()
 	{
-		return this.hasPermission;
+		return !(this.channelPermission.equalsIgnoreCase(CommandPermissions.CHANNEL_JOIN_PERMISSION));
 	}
 
 	@Override
@@ -227,7 +228,6 @@ public class ChatChannel implements IChatChannel
 	public void setChannelPermission(String Permission)
 	{
 		this.channelPermission = Permission;
-		this.hasPermission = !Permission.isEmpty();
 	}
 
 	@Override
