@@ -25,11 +25,11 @@ import java.io.IOException;
 public class ChatManager extends JavaPlugin
 {
 	public static ChannelHandler channelHandler;
-	public static String GLOBAL_CHAT_CHANNEL = "Global";
+	public static final String GLOBAL_CHAT_CHANNEL = "Global";
 	public static RunnableManager runnableManager;
 	public static Configuration channelConfig;
 
-	private static String multichatFolder = "plugins/MultiChat";
+	private static final String multichatFolder = "plugins/MultiChat";
 
 	@Override
 	public void onEnable()
