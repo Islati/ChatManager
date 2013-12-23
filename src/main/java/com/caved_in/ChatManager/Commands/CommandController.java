@@ -1,10 +1,6 @@
 package com.caved_in.chatmanager.commands;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-
+import com.google.common.collect.Lists;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -13,10 +9,12 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.google.common.collect.Lists;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.reflect.Method;
+import java.util.HashMap;
 
-public class CommandController implements CommandExecutor
-{
+public class CommandController implements CommandExecutor {
 
 	/**
 	 * @author AmoebaMan
@@ -31,44 +29,35 @@ public class CommandController implements CommandExecutor
 	private final static HashMap<String, Method> subMethods = new HashMap<String, Method>();
 
 	/**
-	 * Registers all command handlers and subcommand handlers in a class, matching them with their corresponding commands and subcommands registered to the specified plugin.
+	 * Registers all command handlers and subcommand handlers in a class, matching them with their corresponding commands and subcommands registered to the
+	 * specified plugin.
 	 *
 	 * @param plugin  The plugin whose commands will be considered for registration
 	 * @param handler An instance of the class whose methods will be considered for registration
 	 */
-	public static void registerCommands(JavaPlugin plugin, Object handler)
-	{
+	public static void registerCommands(JavaPlugin plugin, Object handler) {
 
-		for (Method method : handler.getClass().getMethods())
-		{
+		for (Method method : handler.getClass().getMethods()) {
 			Class<?>[] params = method.getParameterTypes();
-			if (params.length == 2 && CommandSender.class.isAssignableFrom(params[0]) && String[].class.equals(params[1]))
-			{
+			if (params.length == 2 && CommandSender.class.isAssignableFrom(params[0]) && String[].class.equals(params[1])) {
 
-				if (isCommandHandler(method))
-				{
+				if (isCommandHandler(method)) {
 					CommandHandler annotation = method.getAnnotation(CommandHandler.class);
-					if (plugin.getCommand(annotation.name()) != null)
-					{
+					if (plugin.getCommand(annotation.name()) != null) {
 						plugin.getCommand(annotation.name()).setExecutor(new CommandController());
-						if (!(annotation.aliases().equals(new String[]{""})))
-						{
+						if (!(annotation.aliases().equals(new String[]{""}))) {
 							plugin.getCommand(annotation.name()).setAliases(Lists.newArrayList(annotation.aliases()));
 						}
-						if (!annotation.description().equals(""))
-						{
+						if (!annotation.description().equals("")) {
 							plugin.getCommand(annotation.name()).setDescription(annotation.description());
 						}
-						if (!annotation.usage().equals(""))
-						{
+						if (!annotation.usage().equals("")) {
 							plugin.getCommand(annotation.name()).setUsage(annotation.usage());
 						}
-						if (!annotation.permission().equals(""))
-						{
+						if (!annotation.permission().equals("")) {
 							plugin.getCommand(annotation.name()).setPermission(annotation.permission());
 						}
-						if (!annotation.permissionMessage().equals(""))
-						{
+						if (!annotation.permissionMessage().equals("")) {
 							plugin.getCommand(annotation.name()).setPermissionMessage(ChatColor.RED + annotation.permissionMessage());
 						}
 						handlers.put(plugin.getCommand(annotation.name()), handler);
@@ -76,11 +65,9 @@ public class CommandController implements CommandExecutor
 					}
 				}
 
-				if (isSubCommandHandler(method))
-				{
+				if (isSubCommandHandler(method)) {
 					SubCommandHandler annotation = method.getAnnotation(SubCommandHandler.class);
-					if (plugin.getCommand(annotation.parent()) != null)
-					{
+					if (plugin.getCommand(annotation.parent()) != null) {
 						plugin.getCommand(annotation.parent()).setExecutor(new CommandController());
 						SubCommand subCommand = new SubCommand(plugin.getCommand(annotation.parent()), annotation.name());
 						subCommand.permission = annotation.permission();
@@ -100,8 +87,7 @@ public class CommandController implements CommandExecutor
 	 *         When registering a handler with this class, only methods marked with this annotation will be considered for command registration.
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
-	public static @interface CommandHandler
-	{
+	public static @interface CommandHandler {
 		String name();
 
 		String[] aliases() default {""};
@@ -118,8 +104,7 @@ public class CommandController implements CommandExecutor
 	/**
 	 * Tests if a method is a command handler
 	 */
-	private static boolean isCommandHandler(Method method)
-	{
+	private static boolean isCommandHandler(Method method) {
 		return method.getAnnotation(CommandHandler.class) != null;
 	}
 
@@ -129,8 +114,7 @@ public class CommandController implements CommandExecutor
 	 *         When registering a handler with this class, only methods marked with this annotation will be considered for subcommand registration.
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
-	public static @interface SubCommandHandler
-	{
+	public static @interface SubCommandHandler {
 		String parent();
 
 		String name();
@@ -143,49 +127,43 @@ public class CommandController implements CommandExecutor
 	/**
 	 * Tests if a method is a subcommand handler
 	 */
-	private static boolean isSubCommandHandler(Method method)
-	{
+	private static boolean isSubCommandHandler(Method method) {
 		return method.getAnnotation(SubCommandHandler.class) != null;
 	}
 
 	/**
 	 * A class for representing subcommands
 	 */
-	private static class SubCommand
-	{
+	private static class SubCommand {
 		public final Command superCommand;
 		public final String subCommand;
 		public String permission;
 		public String permissionMessage;
 
-		public SubCommand(Command superCommand, String subCommand)
-		{
+		public SubCommand(Command superCommand, String subCommand) {
 			this.superCommand = superCommand;
 			this.subCommand = subCommand.toLowerCase();
 		}
 
-		public boolean equals(Object x)
-		{
+		public boolean equals(Object x) {
 			return toString().equals(x.toString());
 		}
 
-		public String toString()
-		{
+		public String toString() {
 			return (superCommand.getName() + " " + subCommand).trim();
 		}
 	}
 
 	/**
-	 * This is the method that "officially" processes commands, but in reality it will always delegate responsibility to the handlers and methods assigned to the command or subcommand
+	 * This is the method that "officially" processes commands, but in reality it will always delegate responsibility to the handlers and methods assigned to
+	 * the command or subcommand
 	 * Beyond checking permissions, checking player/console sending, and invoking handlers and methods, this method does not actually act on the commands
 	 */
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
-	{
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		/*
-         * If a subcommand may be present...
+		 * If a subcommand may be present...
          */
-		if (args.length > 0)
-		{
+		if (args.length > 0) {
             /*
              * Get the subcommand given and the handler and method attached to it
              */
@@ -194,56 +172,47 @@ public class CommandController implements CommandExecutor
             /*
              * If and only if the subcommand actually exists...
              */
-			if (subCommand != null)
-			{
+			if (subCommand != null) {
 				Object subHandler = subHandlers.get(subCommand.toString());
 				Method subMethod = subMethods.get(subCommand.toString());
                 /*
                  * If and only if both handler and method exist...
                  */
-				if (subHandler != null && subMethod != null)
-				{
+				if (subHandler != null && subMethod != null) {
                     /*
                      * Reorder the arguments so we don't resend the subcommand
                      */
 					String[] subArgs = new String[args.length - 1];
-					for (int i = 1; i < args.length; i++)
-					{
+					for (int i = 1; i < args.length; i++) {
 						subArgs[i - 1] = args[i];
 					}
                     /*
                      * If the method requires a player and the subcommand wasn't sent by one, don't continue
                      */
-					if (subMethod.getParameterTypes()[0].equals(Player.class) && !(sender instanceof Player))
-					{
+					if (subMethod.getParameterTypes()[0].equals(Player.class) && !(sender instanceof Player)) {
 						sender.sendMessage(ChatColor.RED + "This command requires a player sender");
 						return true;
 					}
                     /*
                      * If the method requires a console and the subcommand wasn't sent by one, don't continue
                      */
-					if (subMethod.getParameterTypes()[0].equals(ConsoleCommandSender.class) && !(sender instanceof ConsoleCommandSender))
-					{
+					if (subMethod.getParameterTypes()[0].equals(ConsoleCommandSender.class) && !(sender instanceof ConsoleCommandSender)) {
 						sender.sendMessage(ChatColor.RED + "This command requires a console sender");
 						return true;
 					}
                     /*
                      * If a permission is attached to this subcommand and the sender doens't have it, don't continue
                      */
-					if (!subCommand.permission.isEmpty() && !sender.hasPermission(subCommand.permission))
-					{
+					if (!subCommand.permission.isEmpty() && !sender.hasPermission(subCommand.permission)) {
 						sender.sendMessage(ChatColor.RED + subCommand.permissionMessage);
 						return true;
 					}
                     /*
                      * Try to process the command
                      */
-					try
-					{
+					try {
 						subMethod.invoke(subHandler, sender, args);
-					}
-					catch (Exception e)
-					{
+					} catch (Exception e) {
 						sender.sendMessage(ChatColor.RED + "There was an error while processing this command");
 						e.printStackTrace();
 					}
@@ -260,33 +229,27 @@ public class CommandController implements CommandExecutor
         /*
          * If and only if both handler and method exist...
          */
-		if (handler != null && method != null)
-		{
+		if (handler != null && method != null) {
             /*
              * If the method requires a player and the command wasn't sent by one, don't continue
              */
-			if (method.getParameterTypes()[0].equals(Player.class) && !(sender instanceof Player))
-			{
+			if (method.getParameterTypes()[0].equals(Player.class) && !(sender instanceof Player)) {
 				sender.sendMessage(ChatColor.RED + "This command requires a player sender");
 				return true;
 			}
             /*
              * If the method requires a console and the command wasn't sent by one, don't continue
              */
-			if (method.getParameterTypes()[0].equals(ConsoleCommandSender.class) && !(sender instanceof ConsoleCommandSender))
-			{
+			if (method.getParameterTypes()[0].equals(ConsoleCommandSender.class) && !(sender instanceof ConsoleCommandSender)) {
 				sender.sendMessage(ChatColor.RED + "This command requires a console sender");
 				return true;
 			}
             /*
              * Try to process the command
              */
-			try
-			{
+			try {
 				method.invoke(handler, sender, args);
-			}
-			catch (Exception e)
-			{
+			} catch (Exception e) {
 				sender.sendMessage(ChatColor.RED + "There was an error while processing this command");
 				e.printStackTrace();
 			}
@@ -294,8 +257,7 @@ public class CommandController implements CommandExecutor
         /*
          * Otherwise we have to fake not recognising the command
          */
-		else
-		{
+		else {
 			sender.sendMessage("Unknown command. Type \"help\" for help.");
 		}
 

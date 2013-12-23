@@ -1,5 +1,6 @@
 package com.caved_in.chatmanager.events;
 
+import com.caved_in.chatmanager.handlers.chat.channels.ChatChannel;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -8,13 +9,10 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import com.caved_in.chatmanager.handlers.chat.channels.ChatChannel;
-
 /**
  * User: Brandon
  */
-public class ChannelDeleteEvent extends Event implements Cancellable
-{
+public class ChannelDeleteEvent extends Event implements Cancellable {
 	private static final HandlerList handlers = new HandlerList();
 	private CommandSender channelDeleter;
 	private ChatChannel chatChannel;
@@ -25,89 +23,69 @@ public class ChannelDeleteEvent extends Event implements Cancellable
 	 * @param chatChannel
 	 * @param channelDeleter
 	 */
-	public ChannelDeleteEvent(ChatChannel chatChannel, CommandSender channelDeleter)
-	{
+	public ChannelDeleteEvent(ChatChannel chatChannel, CommandSender channelDeleter) {
 		super(false);
 		this.channelDeleter = (channelDeleter == null) ? Bukkit.getConsoleSender() : channelDeleter;
 		this.chatChannel = chatChannel;
-		if (chatChannel.getChatMembers().size() <= 0)
-		{
+		if (chatChannel.getChatMembers().size() <= 0) {
 			this.deleteReason = ChannelDeleteReason.EMPTY;
-		}
-		else
-		{
-			if (channelDeleter instanceof Player)
-			{
+		} else {
+			if (channelDeleter instanceof Player) {
 				Player player = (Player) channelDeleter;
-				if (!chatChannel.getCreator().equalsIgnoreCase(player.getName()))
-				{
+				if (!chatChannel.getCreator().equalsIgnoreCase(player.getName())) {
 					this.deleteReason = ChannelDeleteReason.DELETED_BY_STAFF;
-				}
-				else
-				{
+				} else {
 					this.deleteReason = ChannelDeleteReason.DELETED_BY_OWNER;
 				}
-			}
-			else
-			{
+			} else {
 				this.deleteReason = ChannelDeleteReason.OTHER;
 			}
 		}
 	}
 
-	public enum ChannelDeleteReason
-	{
+	public enum ChannelDeleteReason {
 		EMPTY,
 		DELETED_BY_OWNER,
 		DELETED_BY_STAFF,
 		OTHER
 	}
 
-	public CommandSender getDeleter()
-	{
+	public CommandSender getDeleter() {
 		return this.channelDeleter;
 	}
 
-	public boolean isSenderPlayer()
-	{
+	public boolean isSenderPlayer() {
 		return (this.channelDeleter instanceof Player);
 	}
 
-	public boolean isSenderConsole()
-	{
+	public boolean isSenderConsole() {
 		return (this.channelDeleter instanceof ConsoleCommandSender);
 	}
 
-	public ChatChannel getChatChannel()
-	{
+	public ChatChannel getChatChannel() {
 		return this.chatChannel;
 	}
 
-	public ChannelDeleteReason getDeleteReason()
-	{
+	public ChannelDeleteReason getDeleteReason() {
 		return this.deleteReason;
 	}
 
 	@Override
-	public HandlerList getHandlers()
-	{
+	public HandlerList getHandlers() {
 		return handlers;
 	}
 
-	public static HandlerList getHandlerList()
-	{
+	public static HandlerList getHandlerList() {
 		return handlers;
 	}
 
 	@Override
-	public boolean isCancelled()
-	{
+	public boolean isCancelled() {
 		return this.isCancelled;
 	}
 
 	@Override
-	public void setCancelled(boolean Cancel)
-	{
+	public void setCancelled(boolean Cancel) {
 		this.isCancelled = Cancel;
 	}
 }

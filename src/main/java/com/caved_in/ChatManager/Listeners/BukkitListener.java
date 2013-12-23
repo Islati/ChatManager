@@ -17,23 +17,19 @@ import org.bukkit.plugin.java.JavaPlugin;
 /**
  * User: Brandon
  */
-public class BukkitListener implements Listener
-{
-	public BukkitListener(JavaPlugin Plugin)
-	{
+public class BukkitListener implements Listener {
+	public BukkitListener(JavaPlugin Plugin) {
 		Plugin.getServer().getPluginManager().registerEvents(this, Plugin);
 	}
 
 	@EventHandler
-	public void onPlayerQuit(PlayerQuitEvent event)
-	{
+	public void onPlayerQuit(PlayerQuitEvent event) {
 		final String playerName = event.getPlayer().getName();
-		ChatManager.runnableManager.runTaskLaterAsynch(new Runnable()
-		{
+		ChatManager.runnableManager.runTaskLaterAsynch(new Runnable() {
 			@Override
-			public void run()
-			{
-				ChannelLeaveEvent channelLeaveEvent = new ChannelLeaveEvent(ChatManager.channelHandler.getChannel(PlayerHandler.getData(playerName).getChatChannel()), playerName);
+			public void run() {
+				ChannelLeaveEvent channelLeaveEvent = new ChannelLeaveEvent(ChatManager.channelHandler.getChannel(PlayerHandler.getData(playerName)
+						.getChatChannel()), playerName);
 				ChannelEventHandler.handleChannelLeaveEvent(channelLeaveEvent);
 				PlayerHandler.removeData(playerName);
 			}
@@ -41,26 +37,24 @@ public class BukkitListener implements Listener
 	}
 
 	@EventHandler
-	public void onPlayerJoin(final PlayerJoinEvent event)
-	{
+	public void onPlayerJoin(final PlayerJoinEvent event) {
 		PlayerHandler.addData(event.getPlayer().getName());
-		ChatManager.runnableManager.runTaskLaterAsynch(new Runnable()
-		{
+		ChatManager.runnableManager.runTaskLaterAsynch(new Runnable() {
 
 			@Override
-			public void run()
-			{
-				ChannelJoinEvent channelJoinEvent = new ChannelJoinEvent(ChatManager.channelHandler.getChannel(PlayerHandler.getData(event.getPlayer().getName()).getChatChannel()), event.getPlayer());
+			public void run() {
+				ChannelJoinEvent channelJoinEvent = new ChannelJoinEvent(ChatManager.channelHandler.getChannel(PlayerHandler.getData(event.getPlayer().getName
+						()).getChatChannel()), event.getPlayer());
 				ChannelEventHandler.handleChannelJoinEvent(channelJoinEvent);
 			}
 		}, 10);
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
-	public void onPlayerChat(AsyncPlayerChatEvent event)
-	{
+	public void onPlayerChat(AsyncPlayerChatEvent event) {
 		event.setCancelled(true);
-		ChannelChatEvent channelChatEvent = new ChannelChatEvent(ChatManager.channelHandler.getChannel(PlayerHandler.getData(event.getPlayer().getName()).getChatChannel()), event.getPlayer(), event.getMessage());
+		ChannelChatEvent channelChatEvent = new ChannelChatEvent(ChatManager.channelHandler.getChannel(PlayerHandler.getData(event.getPlayer().getName())
+				.getChatChannel()), event.getPlayer(), event.getMessage());
 		ChannelEventHandler.handleChannelChatEvent(channelChatEvent);
 	}
 }

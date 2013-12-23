@@ -2,8 +2,7 @@ package com.caved_in.chatmanager.handlers.helpmenu;
 
 import java.util.LinkedList;
 
-public class Pages
-{
+public class Pages {
 
 	final String[] data;
 	final int itemsPerPage;
@@ -15,8 +14,7 @@ public class Pages
 	 *                     displayed
 	 * @param itemsPerPage How many items will be returned per page
 	 */
-	public Pages(String[] data, int itemsPerPage)
-	{
+	public Pages(String[] data, int itemsPerPage) {
 		this.data = data;
 		this.itemsPerPage = Math.abs(itemsPerPage);
 	}
@@ -27,16 +25,12 @@ public class Pages
 	 * @param page The page number to show (1 - pageNumbers)
 	 * @return
 	 */
-	public String[] getStringsToSend(int page)
-	{
+	public String[] getStringsToSend(int page) {
 		int startIndex = this.itemsPerPage * (Math.abs(page) - 1);
 		LinkedList<String> list = new LinkedList<String>();
-		if (page <= this.getPages())
-		{
-			for (int i = startIndex; i < (startIndex + this.itemsPerPage); i++)
-			{
-				if (this.data.length > i)
-				{
+		if (page <= this.getPages()) {
+			for (int i = startIndex; i < (startIndex + this.itemsPerPage); i++) {
+				if (this.data.length > i) {
 					list.add(data[i]);
 				}
 			}
@@ -49,16 +43,14 @@ public class Pages
 	 *
 	 * @return
 	 */
-	public int getPages()
-	{
+	public int getPages() {
 		return (int) Math.ceil((double) data.length / (double) this.itemsPerPage);
 	}
 
 	/**
 	 * @return The number of elements in the data array.
 	 */
-	public int getRawArrayLength()
-	{
+	public int getRawArrayLength() {
 		return this.data.length;
 	}
 

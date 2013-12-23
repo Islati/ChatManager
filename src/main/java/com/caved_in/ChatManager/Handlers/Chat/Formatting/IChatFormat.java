@@ -1,7 +1,6 @@
 package com.caved_in.chatmanager.handlers.chat.formatting;
 
-public interface IChatFormat
-{
+public interface IChatFormat {
 	/**
 	 * Get the formats identifier
 	 *
